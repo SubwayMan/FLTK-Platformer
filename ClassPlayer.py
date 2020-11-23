@@ -34,37 +34,41 @@ class player(Fl_Box):
         for pos, dtuple in enumerate(dtuples):
            
             obj_x, obj_y, obj_w, obj_h = dtuple
-
+            directiondict = {}
             #check feet
             if (not ((self.intx < obj_x and self.intx + self.intw < obj_x) or \
                 (self.intx > obj_x + obj_w and (self.intx + self.intw) > obj_x + obj_w))) and \
                 self.inty + self.inth >= obj_y and self.inty + self.inth < (obj_y + obj_h):
      
-                obj_arr[pos].collis(self, "PLAYER_BOTTOM")
-                continue
+                directiondict["PLAYER_BOTTOM"] = abs((self.inty+ self.inth) - obj_y)
+                #obj_arr[pos].collis(self, "PLAYER_BOTTOM")
+                #continue
             #check head
             if (not ((self.intx < obj_x and self.intx + self.intw < obj_x) or \
                 (self.intx > obj_x + obj_w and (self.intx + self.intw) > obj_x + obj_w))) and \
                 self.inty <= (obj_y+obj_h) and self.inty > (obj_y):
-
-                obj_arr[pos].collis(self, "PLAYER_TOP")
-                continue
+                
+                directiondict["PLAYER_TOP"] = abs((obj_y + obj_h) - self.inty)
+                #obj_arr[pos].collis(self, "PLAYER_TOP")
             #check right side
             if (not ((self.inty < obj_y and self.inty + self.inth < obj_y) or \
                 (self.inty > obj_y + obj_h and (self.inty + self.inth) > obj_y + obj_h))) and \
-                self.intx + self.intw >= obj_x and self.intx + self.intw <= obj_x + obj_w:
+                self.intx + self.intw >= obj_x and self.intx + self.intw < (obj_x+obj_w):
 
-                obj_arr[pos].collis(self, "PLAYER_RIGHT")
-                continue
+                directiondict["PLAYER_RIGHT"] = abs((self.intx + self.intw) - obj_x)
+                #obj_arr[pos].collis(self, "PLAYER_RIGHT")
 
             #check left side
             if (not ((self.inty < obj_y and self.inty + self.inth < obj_y) or \
                 (self.inty > obj_y + obj_h and (self.inty + self.inth) > obj_y + obj_h))) and \
-                self.intx + self.intw < (obj_x + obj_w) and self.intx + self.intw >= obj_x:
-
-                obj_arr[pos].collis(self, "PLAYER_LEFT")
-                continue
-
+                self.intx <= (obj_x+obj_w) and self.intx > (obj_x):
+                
+                directiondict["PLAYER_LEFT"] = abs((obj_x + obj_w) - self.intx)
+            
+            if directiondict:
+                dec = min(directiondict, key = lambda a: directiondict[a])
+                obj_arr[pos].collis(self, dec)
+            
     def move(self):
         
         self.inty += self.yv
@@ -83,11 +87,11 @@ class player(Fl_Box):
         n = False
         if Fl.event_key(FL_Up):
             if self.STANDING_CHECK:
-                self.yv = -8
+                self.yv = -12
             n = True
                 
         if Fl.event_key(FL_Right):
-            self.xv = 3
+            self.xv = 5
             n = True
            
         if Fl.event_key(FL_Down):
@@ -95,7 +99,7 @@ class player(Fl_Box):
             n = True
            
         if Fl.event_key(FL_Left):
-            self.xv = -3
+            self.xv = -5
             n = True
         return 1 if n else 0
             

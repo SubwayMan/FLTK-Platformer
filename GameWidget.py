@@ -33,7 +33,7 @@ class Solid_Block(Fl_Box):
         
     def collis(self, pl, collis_t):
         print(collis_t)
-        self.image(self.debugsprite)
+        #self.image(self.debugsprite)
         if collis_t == "PLAYER_TOP": 
             pl.set_yv(0)
             pl.set_y(self.inty + self.inth)
@@ -47,12 +47,12 @@ class Solid_Block(Fl_Box):
             
         if collis_t == "PLAYER_LEFT":
             pl.set_x(self.intx + self.intw)
-            pl.set_xv(0)
+            pl.set_xv(max(0, pl.get_xv()))
         if collis_t == "PLAYER_RIGHT":
             
             plw = pl.get_w()
             pl.set_x(self.intx - plw)
-            pl.set_xv(0)
+            pl.set_xv(min(0, pl.get_xv()))
         
 
      #getter and setter methods
