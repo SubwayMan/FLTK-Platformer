@@ -16,6 +16,8 @@ class player(Fl_Box):
         self.g = 0.7
         self.xv = 0
         self.yv = 0
+        self.originx = x
+        self.originy = y
         self.c_objects = c_objects
         self.STANDING_CHECK = True
         
@@ -73,7 +75,13 @@ class player(Fl_Box):
         
         self.inty += self.yv
         self.STANDING_CHECK = False
-        self.collision(self.c_objects)
+        if self.collision(self.c_objects):
+            print("OOF")
+
+            self.reset()
+            self.position(self.intx, int(self.inty))
+            return None
+        
         if self.STANDING_CHECK:
             self.yv = 0
         self.intx += self.xv
@@ -103,7 +111,11 @@ class player(Fl_Box):
             n = True
         return 1 if n else 0
             
-
+    #death function: do something upon death (in this case, reset to original pos)
+    def reset(self):
+        self.intx = self.originx
+        self.inty = self.originy
+        print("NOO")
     #getter and setter methods
     def get_x(self):
         return self.intx

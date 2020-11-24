@@ -24,17 +24,17 @@ class Game(Fl_Window):
             "XXXXX............X"
             "X........X.......X"
             "X........X.......X"
-            "X.....X..X.......X"
+            "X.....X^^X.......X"
             "X.....X......XXXXX"
-            "X..X..X..........X"
+            "X..X^^X..........X"
             "X..X.............X"
             "X................X"
-            "XX...............X"
+            "XX......X^X......X"
             "XXXXXXXXXXXX.....X"
             "X................X"
             "X.............X..X"
             "X.........X...X..X"
-            "X.@....X..X...X..X"
+            "X.@....X^^X...X..X"
             "XXXXXXXXXXXXXXXXXX"
             "XXXXXXXXXXXXXXXXXX"
             ""), 
@@ -89,6 +89,9 @@ class Game(Fl_Window):
                         #in order [background, static objects, mobiles, player]
                         self.obj_arr.insert(0, newob)
 
+                    elif tile == "^":
+                        newob = Sawblade(j, i, 32, 32)
+                        self.obj_arr.insert(-2, newob)
                     #player
                     if tile == "@":
                         px, py = j, i
