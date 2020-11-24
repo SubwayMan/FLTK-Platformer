@@ -103,7 +103,7 @@ class player(Fl_Box):
             n = True
            
         if Fl.event_key(FL_Down):
-            self.yv = 3
+            self.yv = max(0, self.yv) 
             n = True
            
         if Fl.event_key(FL_Left):

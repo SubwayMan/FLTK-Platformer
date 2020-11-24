@@ -84,3 +84,24 @@ class Sawblade(Game_Object):
 
     def collis(self, pl, collis_t):
         pl.reset()
+
+class exitportal(Game_Object):
+    
+    '''THe exit chest that allows you to progress to the next level.'''
+    def __init__(self, x, y, w, h):
+        '''initialize object'''
+        Game_Object.__init__(self, x, y, w, h, "debugsprite.jpg")
+        self.image(self.debugsprite)
+        self.nextlevelflag = False
+
+    def collis(self, pl, collis_t):
+        '''exit collision detection, assuming the parent to
+        this object will always be a game class'''
+        self.nextlevelflag = True 
+    def getselfflag(self):
+        '''return flag status for handling
+        NOTE: method for setting nextlevelflag is not present. In theory,
+        when nextlevelflag is TRUE, all objects will be deleted and replaced.'''
+        return self.nextlevelflag
+
+

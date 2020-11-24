@@ -24,7 +24,7 @@ class Game(Fl_Window):
             "XXXXX............X"
             "X........X.......X"
             "X........X.......X"
-            "X.....X^^X.......X"
+            "X.....X^^X......*X"
             "X.....X......XXXXX"
             "X..X^^X..........X"
             "X..X.............X"
@@ -91,7 +91,11 @@ class Game(Fl_Window):
 
                     elif tile == "^":
                         newob = Sawblade(j, i, 32, 32)
-                        self.obj_arr.insert(-2, newob)
+                        self.obj_arr.insert(-1, newob)
+
+                    elif tile == "*":
+                        newob = exitportal(j, i, 32, 32)
+                        self.obj_arr.append(newob) 
                     #player
                     if tile == "@":
                         px, py = j, i
@@ -107,9 +111,15 @@ class Game(Fl_Window):
             self.gamer.move()
             for obj in self.obj_arr:
                 obj.redraw()
-            
+            levelchange = self.obj_arr[-2].getselfflag()
+            if levelchange:
+                self.changelevel()
         
         self.end()
+    
+    def changelevel(self):
+        '''increases the level of the game class.'''
+        self.clevel = self.clevel+1
 
 game = Game(512, 512)
 
