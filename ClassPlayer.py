@@ -72,7 +72,7 @@ class player(Fl_Box):
                 obj_arr[pos].collis(self, dec)
             
     def move(self):
-        
+        print(self.intx, self.inty)
         self.inty += self.yv
         self.STANDING_CHECK = False
         if self.collision(self.c_objects):
@@ -90,32 +90,32 @@ class player(Fl_Box):
         self.xv = 0
         if not self.STANDING_CHECK:
             self.yv += self.g
-
+    
     def handle(self, event):
-        n = False
+        r = super(Fl_Box, self).handle(event)
+        a_flag = 0
         if Fl.event_key(FL_Up):
             if self.STANDING_CHECK:
                 self.yv = -12
-            n = True
-                
+            a_flag = 1
         if Fl.event_key(FL_Right):
             self.xv = 5
-            n = True
-           
+            a_flag = 1
         if Fl.event_key(FL_Down):
             self.yv = max(0, self.yv) 
-            n = True
-           
+            a_flag = 1
         if Fl.event_key(FL_Left):
             self.xv = -5
-            n = True
-        return 1 if n else 0
-            
+            a_flag = 1
+        if a_flag:
+            return 1
+        return r
     #death function: do something upon death (in this case, reset to original pos)
     def reset(self):
         self.intx = self.originx
         self.inty = self.originy
         print("NOO")
+
     #getter and setter methods
     def get_x(self):
         return self.intx
@@ -152,3 +152,11 @@ class player(Fl_Box):
 
     def grav(self):
         self.STANDING_CHECK = True
+
+    def resetdefaults(self, nx, ny):
+        self.originx = nx
+        self.originy = ny
+        self.reset()
+
+    def setobj(self, arr):
+        self.c_objects = arr

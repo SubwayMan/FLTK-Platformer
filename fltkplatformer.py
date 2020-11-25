@@ -64,12 +64,14 @@ class Game(Fl_Window):
         '''This is the function that draws each frame. it is responsible for loading 
         each level, drawing and creating all objects and calling the player's movement.'''
         self.begin()
-        
+        if self.gamer == None:
+            self.gamer = player(0, 0, self.obj_arr[1:])
         #special initialization for if the level changes
         if self.clevel != level:
             #empty array of objects (assuming python gc is automatic?)
-            self.obj_arr = []
+            self.obj_arr.clear()
             #set current level
+            print("you got here")
             self.clevel = level
             #load level, manage background, init variables for player pos
             iter = 0
@@ -98,19 +100,18 @@ class Game(Fl_Window):
                         self.obj_arr.append(newob) 
                     #player
                     if tile == "@":
-                        px, py = j, i
-
+                        self.gamer.resetdefaults(j, i)
                     iter += 1
             self.obj_arr.insert(0, bg)
-     
+            self.gamer.setobj(self.obj_arr[1:]) 
             #create player
-            self.gamer = player(px, py, self.obj_arr[1:])
             self.obj_arr.append(self.gamer)
 
         else:
             self.gamer.move()
             for obj in self.obj_arr:
                 obj.redraw()
+            self.gamer.redraw()
             levelchange = self.obj_arr[-2].getselfflag()
             if levelchange:
                 self.changelevel()
