@@ -12,22 +12,27 @@ class Level(Fl_Group):
         self.objects = []
         self.idtomod = {
             "X": Solid_Block,
-            "@": Sawblade
+            "^": Sawblade
             }
         self.bg = Fl_Box(0, 0, 32*(c-2), 32*(r-2))
         self.bg.image(Fl_JPEG_Image(bg).copy(self.bg.w(), self.bg.h()))
         self.begin()
-
+  
         for row in range(r):
             for col in range(c):
-                print((row*r)+c)
-                id = s[(row*r)+c]
+                
+                id = s[(row*c)+col]
                 if id not in self.idtomod:
                     continue
-                newobj = self.idtomod[id]((r*32)-32, (c*32)-32, 32, 32)
+                newobj = self.idtomod[id]((col*32)-32, (row*32)-32, 32, 32)
                 self.objects.append(newobj)
         self.end()
 
+    def draw(self):
+        super().draw()
+        self.bg.redraw()
+        for obj in self.objects:
+            obj.redraw()
 
 class Framework(Fl_Double_Window):
     '''This is the general game class, which handles 
@@ -37,7 +42,7 @@ class Framework(Fl_Double_Window):
         """Initialize window drawing and preparation"""
 
         Fl_Double_Window.__init__(self, 512, 768, title)
-        self.state = 0
+        self.state = 1
         self.level = None
         #standard textmap of each level
         self.levels = [(""
@@ -60,6 +65,26 @@ class Framework(Fl_Double_Window):
             "XXXXXXXXXXXXXXXXXX"
             "XXXXXXXXXXXXXXXXXX"
             ""), 
+            (""
+             ".........................."
+             ".........................."
+             ".........................."
+             ".........................."
+             ".........................."
+             ".........................."
+             ".........................."
+             ".........................."
+             "...............^.........."
+             "...............^.........."
+             "...............X.........."
+             ".........................."
+             ".........................."
+             ".........................."
+             ".........................."
+             ".........................."
+             ".........................."
+             ".........................."
+                ),
             (""
             "XXXXXXXXXXXXXXXXXXXXXXXXXX"
             "X........................X"
@@ -92,6 +117,7 @@ class Framework(Fl_Double_Window):
         s = self.dim[self.state]
         self.begin()
         self.level = Level(s[0]+2, s[1]+2, self.levels[self.state], "background1.jpg")
+        self.resize(self.x(), self.y(), s[1]*32, s[0]*32)
         self.state += 1
             
 

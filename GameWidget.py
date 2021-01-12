@@ -44,7 +44,7 @@ class Solid_Block(Game_Object):
         '''typical init function'''
         Game_Object.__init__(self, x, y, w, h, "platformblock.jpg")     
         self.image(self.pic)
-  
+        #print(f"block created at {x}, {y}")
         
         
     def collis(self, pl, collis_t):
