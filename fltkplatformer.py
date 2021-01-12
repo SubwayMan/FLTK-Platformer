@@ -1,23 +1,45 @@
 
 from fltk import *
 from GameWidget import *
-from ClassPlayer import *
+#from ClassPlayer import *
 from time import sleep
-class Game(Fl_Window):
+
+class Level(Fl_Group):
+    """Level class that controls drawing and scheduling events for objects."""
+    def __init__(self, r, c, s, bg):
+        #
+        Fl_Group.__init__(self, 0, 0, 32*(c-2), 32*(r-2))
+        self.objects = []
+        self.idtomod = {
+            "X": Solid_Block,
+            "@": Sawblade
+            }
+        self.bg = Fl_Box(0, 0, 32*(c-2), 32*(r-2))
+        self.bg.image(Fl_JPEG_Image(bg).copy(self.bg.w(), self.bg.h()))
+        self.begin()
+
+        for row in range(r):
+            for col in range(c):
+                print((row*r)+c)
+                id = s[(row*r)+c]
+                if id not in self.idtomod:
+                    continue
+                newobj = self.idtomod[id]((r*32)-32, (c*32)-32, 32, 32)
+                self.objects.append(newobj)
+        self.end()
+
+
+class Framework(Fl_Double_Window):
     '''This is the general game class, which handles 
     graphics, running the game, and the event loop.'''
 
-    #standard textmap of each level
-    
+    def __init__(self, title = "Simple Platformer"):
+        """Initialize window drawing and preparation"""
 
-    def __init__(self, w, h, title = "Simple Platformer"):
-        '''init'''
-        Fl_Window.__init__(self, w, h, title)
-        self.clevel = -1
-        self.obj_arr = []
-        self.show()
-        self.background = Fl_JPEG_Image("background1.jpg")
-        self.gamer = None
+        Fl_Double_Window.__init__(self, 512, 768, title)
+        self.state = 0
+        self.level = None
+        #standard textmap of each level
         self.levels = [(""
             "XXXXXXXXXXXXXXXXXX"
             "X................X"
@@ -39,93 +61,39 @@ class Game(Fl_Window):
             "XXXXXXXXXXXXXXXXXX"
             ""), 
             (""
-            "XXXXXXXXXXXXXXXXXX"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "XXXXXXXXXXXXXXXXXX"
+            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "X........................X"
+            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
             "")]
-         
-
-    def drawcanvas(self, level, p_x, p_y):
-        '''This is the function that draws each frame. it is responsible for loading 
-        each level, drawing and creating all objects and calling the player's movement.'''
+        self.dim = [(16, 16), (16, 24)]
+        self.timeline()
+        self.show()
+        Fl.run()
+        
+    def timeline(self):
+        if self.level:
+            Fl.delete_widget(self.level)
+              
+        s = self.dim[self.state]
         self.begin()
-        
-        #special initialization for if the level changes
-        if self.clevel != level:
-            #empty array of objects (assuming python gc is automatic?)
-            self.obj_arr = []
-            #set current level
-            self.clevel = level
-            #load level, manage background, init variables for player pos
-            iter = 0
-            newmap = self.levels[self.clevel]
-            bg = Fl_Box(0, 0, 512, 512)
-            bg.image(self.background)
-            px, py = 0, 0
-            #goes tile by tile through canvas (16x16 grid) and creates objects
-            for i in range(-32, 513, 32):
-                for j in range(-32, 513, 32):
-                    #load value for tile
-                    tile = newmap[iter]
-                    #block
-                    if tile == "X":
-                        newob = Solid_Block(j, i, 32, 32)
-                        #objects are inserted in a specific order to get drawn.
-                        #in order [background, static objects, mobiles, player]
-                        self.obj_arr.insert(0, newob)
+        self.level = Level(s[0]+2, s[1]+2, self.levels[self.state], "background1.jpg")
+        self.state += 1
+            
 
-                    elif tile == "^":
-                        newob = Sawblade(j, i, 32, 32)
-                        self.obj_arr.insert(-1, newob)
 
-                    elif tile == "*":
-                        newob = exitportal(j, i, 32, 32)
-                        self.obj_arr.append(newob) 
-                    #player
-                    if tile == "@":
-                        px, py = j, i
-
-                    iter += 1
-            self.obj_arr.insert(0, bg)
-     
-            #create player
-            self.gamer = player(px, py, self.obj_arr[1:])
-            self.obj_arr.append(self.gamer)
-
-        else:
-            self.gamer.move()
-            for obj in self.obj_arr:
-                obj.redraw()
-            levelchange = self.obj_arr[-2].getselfflag()
-            if levelchange:
-                self.changelevel()
-        
-        self.end()
-    
-    def changelevel(self):
-        '''increases the level of the game class.'''
-        self.clevel = self.clevel+1
-
-game = Game(512, 512)
-
-game.drawcanvas(0, -32, -32)
-state = Fl.wait()
-while state:
-    state = Fl.wait()
-    game.drawcanvas(0, -32, -32)
-    sleep(0.033)
+m = Framework()
