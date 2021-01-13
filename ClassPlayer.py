@@ -10,47 +10,65 @@ class player(Fl_Box):
         self.sprite = Fl_PNG_Image("tomatoboy.png")
         self.image(self.sprite.copy(w, h))
 
-        self.g = 0.6
+        self.g = 0.5
         self.xv = 0
         self.yv = 0
         self.Px = x
         self.Py = y
-        self.airres = 0.1
+        self.airres = 0.05
         self.states = dict((ch, False) for ch in "NESW")
-        self.keys = []
+        self.keys = set()
              
     def move(self):
 
+        fflag = False
+        if ord("a") in self.keys:
+            self.xv = max(-4, self.xv-0.5)
+
+
+        if ord("d") in self.keys:
+            self.xv = min(4, self.xv+1.5)
+
+    
         
+        if self.y()+self.h()>=self.parent().h():
+            if ord("w") in self.keys:
+                self.yv = -10
+            fflag = True
+
         self.yv += self.g
         self.Px += self.xv
         self.Py += self.yv
-        if self.xv != 0:
-                print((self.xv/abs(self.xv))*min(self.airres, abs(self.xv)))
-                self.xv -= (self.xv/abs(self.xv))*min(self.airres, abs(self.xv))
+   
+        self.negwork(self.airres)
 
+        if fflag:
+            self.negwork(0.2)
         return True
     
     def refresh(self):
         self.position(int(self.Px), int(self.Py))
         self.parent().redraw()
         
+    def negwork(self, n):
+        if self.xv == 0:
+            return None
+        self.xv -= (self.xv/abs(self.xv))*min(n, abs(self.xv))
 
     def handle(self, event):
         r = 0
-
-        if Fl.get_key(ord("A")):
-            self.xv = max(-5, self.xv-1.5)
+        super().handle(event)
+        if FL_KEYDOWN:
+            self.keys.add(Fl.event_key())
             r = 1
-
-        if Fl.get_key(ord("D")):
-            self.xv = min(5, self.xv+1.5)
+        if FL_KEYUP:
+            nset = set()
+            for k in self.keys:
+                if Fl.get_key(k):
+                    nset.add(k)
+            self.keys = nset
             r = 1
-    
-        if Fl.get_key(ord("W")):
-            if self.y()+self.h()>=self.parent().h():
-                self.yv = -12
-            r = 1
+                 
        
         return r
             
