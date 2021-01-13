@@ -90,8 +90,8 @@ class exitportal(Game_Object):
     '''THe exit chest that allows you to progress to the next level.'''
     def __init__(self, x, y, w, h):
         '''initialize object'''
-        Game_Object.__init__(self, x, y, w, h, "debugsprite.jpg")
-        self.image(self.debugsprite)
+        Game_Object.__init__(self, x, y, w, h, "treasurechest.png")
+        self.image(self.pic)
         self.nextlevelflag = False
 
     def collis(self, pl, collis_t):

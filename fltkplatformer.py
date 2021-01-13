@@ -126,10 +126,12 @@ class Framework(Fl_Double_Window):
             "X..X..XXX^^X.............X"
             "XXXXXXXXXXXXXXXXXXXXXXXXXX"
             "")]
+
         self.dim = [(16, 16), (16, 24)]
         self.timeline()
         self.show()
         Fl.run()
+
         
     def timeline(self):
         if self.level:

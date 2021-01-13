@@ -28,8 +28,6 @@ class player(Fl_Box):
 
         if ord("d") in self.keys:
             self.xv = min(4, self.xv+1.5)
-
-    
         
         if self.y()+self.h()>=self.parent().h():
             if ord("w") in self.keys:
@@ -72,9 +70,10 @@ class player(Fl_Box):
        
         return r
             
+
     #death function: do something upon death (in this case, reset to original pos)
     def reset(self):
         self.intx = self.originx
         self.inty = self.originy
         print("NOO")
-    
+
