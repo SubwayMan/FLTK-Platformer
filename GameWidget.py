@@ -14,11 +14,24 @@ class Game_Object(Fl_Box):
             self.pic = Fl_JPEG_Image(sprite)
         elif sprite.endswith(".png"):
             self.pic = Fl_PNG_Image(sprite)
-    
+        
+        self.reflect = dict((f, g) for f, g in zip("NESW", "SWNE"))
+        #a face is represented by its type, its lower bound, its upper bound, and its plane location
+        #ex. a face ("HOR", 10, 20, 60) is a horizontal surface from x10->20 located at y 60
+        self.faces = {
+            "N": ("HOR", x, x+w, y),
+            "S": ("HOR", x, x+w, y+h),
+            "W": ("VERT", y, y+h, x),
+            "E": ("VERT", y, y+h, x+w),
+            }
+
     def collis(self, pl, X, X0):
         '''Recieves a player object,
         then changes player's attributes accordingly. This method has to 
         be reimplemented throughout all game objects.'''
+        if not super().collis():
+            return False
+
         sx, sy = self.x(), self.y()
         sx2, sy2 = sx+self.w(), sy+self.y()
 
@@ -27,8 +40,31 @@ class Game_Object(Fl_Box):
                 return True
         return False
 
-    
-    
+    def VectorFaceIntersect(self, vec, face) -> bool:
+
+        p1, p2 = vec
+        Dy = p2[1]-p1[1]
+        Dx = p2[0]-p1[0]
+        if face[0] == "HOR":
+            
+            if (p1[0]<face[1] and p2[0]<face[1]) or (p1[0]>face[2] and p2[0]>face[2]):
+                return None
+
+            nDy = face[3]-p1[1]
+            nDx = Dx*(nDy/Dy)
+            if face[1]<p1[0]+nDx<face[2]:
+                return True
+            
+        if face[0] == "VERT":
+
+            if (p1[1]<face[1] and p2[1]<face[1]) or (p1[1]>face[2] and p2[1]>face[2]):
+                return None
+
+            nDx = face[3]-p1[0]
+            nDy = Dy*(nDx/Dx)
+            if face[1]<p1[1]+nDy<face[2]:
+                return True
+                
 
 class Solid_Block(Game_Object):
     '''Class for solid surfaces (walls, floors)'''
