@@ -11,11 +11,11 @@ class player(Fl_Box):
         self.image(self.sprite.copy(w, h))
 
         self.g = 0.5
-        self.xv = 0
-        self.yv = 0
-        self.Px = x
-        self.Py = y
+        self.Ox = x
+        self.Oy = y
+        self.reset()
         self.airres = 0.05
+        self.friction = 0.2
         self.states = dict((ch, False) for ch in "NESW")
         self.keys = set()
              
@@ -23,11 +23,11 @@ class player(Fl_Box):
 
         fflag = False
         if ord("a") in self.keys:
-            self.xv = max(-4, self.xv-0.5)
+            self.xv = max(-4, self.xv-0.7)
 
 
         if ord("d") in self.keys:
-            self.xv = min(4, self.xv+1.5)
+            self.xv = min(4, self.xv+0.7)
         
         if self.y()+self.h()>=self.parent().h():
             if ord("w") in self.keys:
@@ -41,7 +41,7 @@ class player(Fl_Box):
         self.negwork(self.airres)
 
         if fflag:
-            self.negwork(0.2)
+            self.negwork(self.friction)
         return True
     
     def refresh(self):
@@ -73,7 +73,9 @@ class player(Fl_Box):
 
     #death function: do something upon death (in this case, reset to original pos)
     def reset(self):
-        self.intx = self.originx
-        self.inty = self.originy
-        print("NOO")
+        self.position(self.Ox, self.Oy)
+        self.xv = 0
+        self.yv = 0
+        self.Px = self.x()
+        self.Py = self.y()
 
