@@ -43,10 +43,11 @@ class Level(Fl_Group):
 
     def collision(self, player, obj):
         
-        Xhorzi = player.x()
-        Xverti = player.y()
+        
         player.Px = max(min(player.Px, self.w()-player.w()), 0)
-        player.Py = min(player.Py, self.h()-player.h())
+        if player.Py > self.h()-player.h():
+            player.Py = self.h()-player.h()
+            player.states["S"] = True
 
         px0, py0, pw, ph = player.x(), player.y(), player.w(), player.h()
         px, py = player.Px, player.Py
@@ -110,8 +111,8 @@ class Framework(Fl_Double_Window):
             "X........................X"
             "X........................X"
             "X........................X"
-            "X........................X"
-            "X..@.........^^..........X"
+            "X............X.....X.....X"
+            "X..@.........XX....X.....X"
             "XXXXXXXXXXXXXXXXXXXXXXXXXX"
             ""),
             (""

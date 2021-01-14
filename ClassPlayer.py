@@ -22,8 +22,7 @@ class player(Fl_Box):
     def move(self):
 
         fflag = False
-        for k in self.states:
-            self.states[k] = False
+        self.yv = min(self.yv+self.g, 20)
 
         if ord("a") in self.keys:
             self.xv = max(-4, self.xv-0.7)
@@ -32,19 +31,24 @@ class player(Fl_Box):
         if ord("d") in self.keys:
             self.xv = min(4, self.xv+0.7)
         
-        if self.y()+self.h()>=self.parent().h():
+        if self.states["S"]:
+            self.yv = 0
             if ord("w") in self.keys:
                 self.yv = -10
             fflag = True
 
-        self.yv = min(self.yv+self.g, 20)
+        if not self.xv and not self.yv:
+            return False
+
         self.Px += self.xv
         self.Py += self.yv
-   
+        
         self.negwork(self.airres)
-
         if fflag:
             self.negwork(self.friction)
+
+        for k in self.states:
+            self.states[k] = False
         return True
     
     def refresh(self):

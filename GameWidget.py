@@ -5,65 +5,20 @@ class Game_Object(Fl_Box):
     def __init__(self, x, y, w, h, sprite):
         '''typical init function'''
         Fl_Box.__init__(self, x, y, w, h)
-        self.intx = x
-        self.inty = y        
-        self.intw = w
-        self.inth = h
         self.debugsprite = Fl_PNG_Image("debug.png")
         if sprite.endswith(".jpg"):
             self.pic = Fl_JPEG_Image(sprite)
         elif sprite.endswith(".png"):
             self.pic = Fl_PNG_Image(sprite)
         
-        self.reflect = dict((f, g) for f, g in zip("NESW", "SWNE"))
-        #a face is represented by its type, its lower bound, its upper bound, and its plane location
-        #ex. a face ("HOR", 10, 20, 60) is a horizontal surface from x10->20 located at y 60
-        self.faces = {
-            "N": ("HOR", x, x+w, y),
-            "S": ("HOR", x, x+w, y+h),
-            "W": ("VERT", y, y+h, x),
-            "E": ("VERT", y, y+h, x+w),
-            }
+        
 
     def collis(self, pl, X, X0):
-        '''Recieves a player object,
-        then changes player's attributes accordingly. This method has to 
-        be reimplemented throughout all game objects.'''
-        if not super().collis():
-            return False
-
-        sx, sy = self.x(), self.y()
-        sx2, sy2 = sx+self.w(), sy+self.y()
-
-        for point in X0:
-            if sx<point[0]<sx2 and sy<point[1]<sy2:
+        for p in X:
+            if self.x()<p[0]<self.x()+self.w() and self.y()<p[1]<self.y()+self.h():
                 return True
-        return False
 
-    def VectorFaceIntersect(self, vec, face) -> bool:
 
-        p1, p2 = vec
-        Dy = p2[1]-p1[1]
-        Dx = p2[0]-p1[0]
-        if face[0] == "HOR":
-            
-            if (p1[0]<face[1] and p2[0]<face[1]) or (p1[0]>face[2] and p2[0]>face[2]):
-                return None
-
-            nDy = face[3]-p1[1]
-            nDx = Dx*(nDy/Dy)
-            if face[1]<p1[0]+nDx<face[2]:
-                return True
-            
-        if face[0] == "VERT":
-
-            if (p1[1]<face[1] and p2[1]<face[1]) or (p1[1]>face[2] and p2[1]>face[2]):
-                return None
-
-            nDx = face[3]-p1[0]
-            nDy = Dy*(nDx/Dx)
-            if face[1]<p1[1]+nDy<face[2]:
-                return True
                 
 
 class Solid_Block(Game_Object):
@@ -75,10 +30,70 @@ class Solid_Block(Game_Object):
         Game_Object.__init__(self, x, y, w, h, "platformblock.jpg")     
         self.image(self.pic)
         #print(f"block created at {x}, {y}")
+        self.reflect = dict((f, g) for f, g in zip("NESW", "SWNE"))
+        #a face is represented by its type, its lower bound, its upper bound, and its plane location
+        #ex. a face ("HOR", 10, 20, 60) is a horizontal surface from x10->20 located at y 60
+        self.faces = {
+            "N": ("HOR", x, x+w, y),
+            "S": ("HOR", x, x+w, y+h),
+            "W": ("VERT", y, y+h, x),
+            "E": ("VERT", y, y+h, x+w),
+            }
         
         
     def collis(self, pl, X, X0):
-        pass
+        '''Recieves a player object,
+        then changes player's attributes accordingly. This method has to 
+        be reimplemented throughout all game objects.'''
+        ans = (pl.Px-pl.x(), pl.Py-pl.y())
+        di = None
+        for v in list(zip(X0, X)):
+            for k in self.faces:
+                a = self.VectorFaceIntersect(v, self.faces[k])
+                if not a:
+                    continue
+
+                ans = max(ans, a, key=sum)
+                if ans == a: di = k           
+        
+        if not di:
+            return False
+        print(di)
+        if di in "NS":
+            pl.Py = pl.y()+ans[1]
+            pl.yv = 0
+        elif di in "WE":
+            pl.Px = pl.x()+ans[0]
+            pl.xv = 0
+        
+        pl.states[self.reflect[di]] = True
+
+    def VectorFaceIntersect(self, vec, face) -> bool:
+        p1, p2 = vec
+        Dy = p2[1]-p1[1]
+        Dx = p2[0]-p1[0]
+        if face[0] == "HOR":
+            
+            if Dy == 0:
+                return None
+            if (p1[1]<face[3] and p2[1]<face[3]) or (p1[1]>face[3] and p2[1]>face[3]):
+                return None
+            
+            nDy = face[3]-p1[1]
+            nDx = Dx*(nDy/Dy)
+            if face[1]<p1[0]+nDx<face[2]:
+                return (p1[0]+nDx, p1[1]+nDy)
+            
+        if face[0] == "VERT":            
+            if (p1[0]<face[3] and p2[0]<face[3]) or (p1[0]>face[3] and p2[0]>face[3]):
+                return None
+            if Dx == 0:
+                return None
+
+            nDx = face[3]-p1[0]
+            nDy = Dy*(nDx/Dx)
+            if face[1]<p1[1]+nDy<face[2]:
+                return (p1[0]+nDx, p1[1]+nDy)
 
      
 
