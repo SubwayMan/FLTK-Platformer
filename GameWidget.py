@@ -19,8 +19,13 @@ class Game_Object(Fl_Box):
         '''Recieves a player object,
         then changes player's attributes accordingly. This method has to 
         be reimplemented throughout all game objects.'''
-        
-        pass
+        sx, sy = self.x(), self.y()
+        sx2, sy2 = sx+self.w(), sy+self.y()
+
+        for point in X0:
+            if sx<point[0]<sx2 and sy<point[1]<sy2:
+                return True
+        return False
 
     
     
@@ -50,13 +55,8 @@ class Sawblade(Game_Object):
         self.image(self.pic)
 
     def collis(self, pl, X, X0):
-        sx, sy = self.x(), self.y()
-        sx2, sy2 = sx+self.w(), sy+self.y()
-
-        for point in X0:
-            if sx<point[0]<sx2 and sy<point[1]<sy2:
-                pl.reset()
-                return True
+        if super().collis(pl, X, X0):
+            pl.reset()
 
 class exitportal(Game_Object):
     

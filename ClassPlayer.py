@@ -22,6 +22,9 @@ class player(Fl_Box):
     def move(self):
 
         fflag = False
+        for k in self.states:
+            self.states[k] = False
+
         if ord("a") in self.keys:
             self.xv = max(-4, self.xv-0.7)
 
@@ -34,7 +37,7 @@ class player(Fl_Box):
                 self.yv = -10
             fflag = True
 
-        self.yv += self.g
+        self.yv = min(self.yv+self.g, 20)
         self.Px += self.xv
         self.Py += self.yv
    
@@ -69,10 +72,9 @@ class player(Fl_Box):
                  
        
         return r
-            
-
-    #death function: do something upon death (in this case, reset to original pos)
+    
     def reset(self):
+        """death function: do something upon death (in this case, reset to original pos)"""
         self.position(self.Ox, self.Oy)
         self.xv = 0
         self.yv = 0
