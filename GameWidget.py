@@ -15,25 +15,14 @@ class Game_Object(Fl_Box):
         elif sprite.endswith(".png"):
             self.pic = Fl_PNG_Image(sprite)
     
-    def collis(self, pl, collis_t):
-        '''Recieves a player object and direction of collision,
+    def collis(self, pl, X, X0):
+        '''Recieves a player object,
         then changes player's attributes accordingly. This method has to 
         be reimplemented throughout all game objects.'''
+        
         pass
 
-    #getter and setter methods
-    def get_x(self):
-        return self.intx
     
-    def get_y(self):
-        return self.inty
-
-     #getter and setter methods
-    def get_w(self):
-        return self.intw
-    
-    def get_h(self):
-        return self.inth
     
 
 class Solid_Block(Game_Object):
@@ -47,30 +36,8 @@ class Solid_Block(Game_Object):
         #print(f"block created at {x}, {y}")
         
         
-    def collis(self, pl, collis_t):
-        print(collis_t)
-        #self.image(self.debugsprite)
-        if collis_t == "PLAYER_TOP": 
-            pl.set_yv(0)
-            pl.set_y(self.inty + self.inth)
-
-        if collis_t == "PLAYER_BOTTOM":
-            print(pl.get_g())
-            pl.grav()
-            plh = pl.get_h()
-            #print(plh, self.inty)
-            pl.set_y(self.inty - plh)
-            
-        if collis_t == "PLAYER_LEFT":
-            pl.set_x(self.intx + self.intw)
-            pl.set_xv(max(0, pl.get_xv()))
-        if collis_t == "PLAYER_RIGHT":
-            
-            plw = pl.get_w()
-            pl.set_x(self.intx - plw)
-            pl.set_xv(min(0, pl.get_xv()))
-        
-        return False
+    def collis(self, pl, X, X0):
+        pass
 
      
 
@@ -82,8 +49,14 @@ class Sawblade(Game_Object):
         Game_Object.__init__(self, x, y, w, h, "sawblade.png")
         self.image(self.pic)
 
-    def collis(self, pl, collis_t):
-        pl.reset()
+    def collis(self, pl, X, X0):
+        sx, sy = self.x(), self.y()
+        sx2, sy2 = sx+self.w(), sy+self.y()
+
+        for point in X0:
+            if sx<point[0]<sx2 and sy<point[1]<sy2:
+                pl.reset()
+                return True
 
 class exitportal(Game_Object):
     
@@ -94,7 +67,7 @@ class exitportal(Game_Object):
         self.image(self.pic)
         self.nextlevelflag = False
 
-    def collis(self, pl, collis_t):
+    def collis(self, pl, X, X0):
         '''exit collision detection, assuming the parent to
         this object will always be a game class'''
         self.nextlevelflag = True 
