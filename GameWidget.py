@@ -14,6 +14,8 @@ class Game_Object(Fl_Box):
         
 
     def collis(self, pl, X, X0):
+        """Base collison method that checks for player hitbox->object hitbox intersection.
+        Inherited by all game objects."""
         for p in X:
             if self.x()<p[0]<self.x()+self.w() and self.y()<p[1]<self.y()+self.h():
                 return True
@@ -34,10 +36,10 @@ class Solid_Block(Game_Object):
         #a face is represented by its type, its lower bound, its upper bound, and its plane location
         #ex. a face ("HOR", 10, 20, 60) is a horizontal surface from x10->20 located at y 60
         self.faces = {
-            "N": ("HOR", x, x+w, y),
-            "S": ("HOR", x, x+w, y+h),
-            "W": ("VERT", y, y+h, x),
-            "E": ("VERT", y, y+h, x+w),
+            "N": (x, x+w, y),
+            "S": (x, x+w, y+h),
+            "W": (y, y+h, x),
+            "E": (y, y+h, x+w),
             }
         
         
@@ -45,57 +47,32 @@ class Solid_Block(Game_Object):
         '''Recieves a player object,
         then changes player's attributes accordingly. This method has to 
         be reimplemented throughout all game objects.'''
-        ans = (pl.Px-pl.x(), pl.Py-pl.y())
-        di = None
-        for v in list(zip(X0, X)):
-            for k in self.faces:
-                a = self.VectorFaceIntersect(v, self.faces[k])
-                if not a:
-                    continue
+        dx = X0[0][0]-X[0][0]
+        dy = X0[0][1]-X[0][1]
+        plfacedict = {
+            "N": (X[0], X[1]),
+            "S": (X[2], X[3]),
+            "E": (X[1], X[3]),
+            "W": (X[0], X[2])
+            }
 
-                ans = max(ans, a, key=sum)
-                if ans == a: di = k           
-        
-        if not di:
+        coltype = ""
+        if dx>0:
+            coltype += "W"
+        elif dx < 0:
+            coltype += "E"
+        if dy>0:
+            coltype += "N"
+        elif dy < 0:
+            coltype += "S"
+        if not coltype:
             return False
-        print(di)
-        if di in "NS":
-            pl.Py = pl.y()+ans[1]
-            pl.yv = 0
-        elif di in "WE":
-            pl.Px = pl.x()+ans[0]
-            pl.xv = 0
-        
-        pl.states[self.reflect[di]] = True
 
-    def VectorFaceIntersect(self, vec, face) -> bool:
-        p1, p2 = vec
-        Dy = p2[1]-p1[1]
-        Dx = p2[0]-p1[0]
-        if face[0] == "HOR":
-            
-            if Dy == 0:
-                return None
-            if (p1[1]<face[3] and p2[1]<face[3]) or (p1[1]>face[3] and p2[1]>face[3]):
-                return None
-            
-            nDy = face[3]-p1[1]
-            nDx = Dx*(nDy/Dy)
-            if face[1]<p1[0]+nDx<face[2]:
-                return (p1[0]+nDx, p1[1]+nDy)
-            
-        if face[0] == "VERT":            
-            if (p1[0]<face[3] and p2[0]<face[3]) or (p1[0]>face[3] and p2[0]>face[3]):
-                return None
-            if Dx == 0:
-                return None
+    def face_push(self, f, f2, id):
+        """Helper function for collision."""
+        if id in "NS":
 
-            nDx = face[3]-p1[0]
-            nDy = Dy*(nDx/Dx)
-            if face[1]<p1[1]+nDy<face[2]:
-                return (p1[0]+nDx, p1[1]+nDy)
 
-     
 
 
 class Sawblade(Game_Object):
@@ -121,11 +98,6 @@ class exitportal(Game_Object):
     def collis(self, pl, X, X0):
         '''exit collision detection, assuming the parent to
         this object will always be a game class'''
-        self.nextlevelflag = True 
-    def getselfflag(self):
-        '''return flag status for handling
-        NOTE: method for setting nextlevelflag is not present. In theory,
-        when nextlevelflag is TRUE, all objects will be deleted and replaced.'''
-        return self.nextlevelflag
+        a = super().collis(pl, X, X0)
 
 
