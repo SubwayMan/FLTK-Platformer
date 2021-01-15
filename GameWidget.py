@@ -17,7 +17,7 @@ class Game_Object(Fl_Box):
         """Base collison method that checks for player hitbox->object hitbox intersection.
         Inherited by all game objects."""
         for p in X:
-            if self.x()<p[0]<self.x()+self.w() and self.y()<p[1]<self.y()+self.h():
+            if self.x()<=p[0]<=self.x()+self.w() and self.y()<=p[1]<=self.y()+self.h():
                 return True
 
 
@@ -47,8 +47,11 @@ class Solid_Block(Game_Object):
         '''Recieves a player object,
         then changes player's attributes accordingly. This method has to 
         be reimplemented throughout all game objects.'''
-        dx = X0[0][0]-X[0][0]
-        dy = X0[0][1]-X[0][1]
+        
+        dx = int(pl.Px - pl.x())
+        dy = int(pl.Py - pl.y())
+        if dx == 0 and dy == 0:
+            return None
         plfacedict = {
             "N": (X[0], X[1]),
             "S": (X[2], X[3]),
@@ -57,9 +60,9 @@ class Solid_Block(Game_Object):
             }
 
         coltype = ""
-        if dx>0:
+        if dx>0.01:
             coltype += "W"
-        elif dx < 0:
+        elif dx < -0.01:
             coltype += "E"
         if dy>0:
             coltype += "N"
@@ -67,7 +70,7 @@ class Solid_Block(Game_Object):
             coltype += "S"
         if not coltype:
             return False
-
+        #print(coltype)
         if len(coltype) == 1:
 
             ans = self.face_push(pl, plfacedict[self.reflect[coltype]], coltype)
@@ -95,20 +98,22 @@ class Solid_Block(Game_Object):
 
             if abs(sub1)>abs(sub2):
                 self.modify(pl, coltype[0], an1)
-            else:
+            elif abs(sub1)<abs(sub2):
                 self.modify(pl, coltype[1], an2)
+            else:
+                return False
 
     def face_push(self, pl, edge, id):
         """Helper function for collision."""
         if super().collis(pl, edge, []):
-                if id == "N":
-                    return self.y()-pl.h()
-                elif id == "S":
-                    return self.y()+self.h()
-                elif id == "W":
-                    return self.x()-pl.w()
-                elif id == "E":
-                    return self.x()+self.w()
+            if id == "N":
+                return self.y()+self.h()
+            elif id == "S":
+                return self.y()-pl.h()
+            elif id == "W":
+                return self.x()-pl.w()
+            elif id == "E":
+                return self.x()+self.w()
       
         return None
 

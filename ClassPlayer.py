@@ -35,17 +35,16 @@ class player(Fl_Box):
             self.yv = 0
             if ord("w") in self.keys:
                 self.yv = -10
-            fflag = True
-
-        if not self.xv and not self.yv:
+            self.negwork(self.friction)
+        if self.xv == 0 and self.yv == 0:
             return False
 
         self.Px += self.xv
         self.Py += self.yv
         
         self.negwork(self.airres)
-        if fflag:
-            self.negwork(self.friction)
+        
+            
 
         for k in self.states:
             self.states[k] = False
@@ -59,7 +58,7 @@ class player(Fl_Box):
         if self.xv == 0:
             return None
         self.xv -= (self.xv/abs(self.xv))*min(n, abs(self.xv))
-
+      
     def handle(self, event):
         r = 0
         super().handle(event)
