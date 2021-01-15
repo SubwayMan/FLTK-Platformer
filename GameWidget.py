@@ -68,11 +68,59 @@ class Solid_Block(Game_Object):
         if not coltype:
             return False
 
-    def face_push(self, f, f2, id):
+        if len(coltype) == 1:
+
+            ans = self.face_push(pl, plfacedict[self.reflect[coltype]], coltype)
+            if ans == None:
+                return False
+            self.modify(pl, coltype, ans)
+            
+        elif len(coltype) == 2:
+            an1 = self.face_push(pl, plfacedict[self.reflect[coltype[0]]], coltype)
+            an2 = self.face_push(pl, plfacedict[self.reflect[coltype[1]]], coltype)
+            
+            if an1 == None and an2 == None:
+                return False
+            if an1 == None and an2 != None:
+                self.modify(pl, coltype[1], an2)
+            elif an1 != None and an2 == None:
+                self.modify(pl, coltype[0], an1)
+
+            if coltype[0] in "NS":
+                sub1 = (an1-pl.y())/dy
+                sub2 = (an2-pl.x())/dx
+            else:
+                sub1 = (an2-pl.x())/dx
+                sub2 = (an1-pl.y())/dy
+
+            if abs(sub1)>abs(sub2):
+                self.modify(pl, coltype[0], an1)
+            else:
+                self.modify(pl, coltype[1], an2)
+
+    def face_push(self, pl, edge, id):
         """Helper function for collision."""
-        if id in "NS":
+        if super().collis(pl, edge, []):
+                if id == "N":
+                    return self.y()-pl.h()
+                elif id == "S":
+                    return self.y()+self.h()
+                elif id == "W":
+                    return self.x()-pl.w()
+                elif id == "E":
+                    return self.x()+self.w()
+      
+        return None
 
-
+    def modify(self, pl, ch, val):
+        """Another helper function designed to avoid repetition on face priority calculations."""
+        pl.states[ch] = True
+        if ch in "NS":
+            pl.Py = val
+            pl.yv = 0
+        elif ch in "EW":
+            pl.Px = val
+            pl.xv = 0
 
 
 class Sawblade(Game_Object):
