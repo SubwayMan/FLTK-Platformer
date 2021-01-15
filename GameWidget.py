@@ -60,9 +60,9 @@ class Solid_Block(Game_Object):
             }
 
         coltype = ""
-        if dx>0.01:
+        if dx>0:
             coltype += "W"
-        elif dx < -0.01:
+        elif dx < 0:
             coltype += "E"
         if dy>0:
             coltype += "N"
@@ -71,38 +71,14 @@ class Solid_Block(Game_Object):
         if not coltype:
             return False
         #print(coltype)
-        if len(coltype) == 1:
+        for ch in coltype:
 
-            ans = self.face_push(pl, plfacedict[self.reflect[coltype]], coltype)
+            ans = self.face_push(pl, plfacedict[self.reflect[ch]], ch)
             if ans == None:
-                return False
-            self.modify(pl, coltype, ans)
+                continue
+            self.modify(pl, ch, ans)
             
-        elif len(coltype) == 2:
-            an1 = self.face_push(pl, plfacedict[self.reflect[coltype[0]]], coltype)
-            an2 = self.face_push(pl, plfacedict[self.reflect[coltype[1]]], coltype)
-            
-            if an1 == None and an2 == None:
-                return False
-            if an1 == None and an2 != None:
-                self.modify(pl, coltype[1], an2)
-            elif an1 != None and an2 == None:
-                self.modify(pl, coltype[0], an1)
-
-            if coltype[0] in "NS":
-                sub1 = (an1-pl.y())/dy
-                sub2 = (an2-pl.x())/dx
-            else:
-                sub1 = (an2-pl.x())/dx
-                sub2 = (an1-pl.y())/dy
-
-            if abs(sub1)>abs(sub2):
-                self.modify(pl, coltype[0], an1)
-            elif abs(sub1)<abs(sub2):
-                self.modify(pl, coltype[1], an2)
-            else:
-                return False
-
+        
     def face_push(self, pl, edge, id):
         """Helper function for collision."""
         if super().collis(pl, edge, []):
@@ -113,7 +89,7 @@ class Solid_Block(Game_Object):
             elif id == "W":
                 return self.x()-pl.w()
             elif id == "E":
-                return self.x()+self.w()
+                return self.x()+self.w()+1
       
         return None
 

@@ -17,25 +17,31 @@ class player(Fl_Box):
         self.airres = 0.05
         self.friction = 0.2
         self.states = dict((ch, False) for ch in "NESW")
-        self.keys = set()
+        self.jump = True
+        Fl.focus(self)
              
     def move(self):
 
         fflag = False
         self.yv = min(self.yv+self.g, 20)
 
-        if ord("a") in self.keys:
+        if Fl.get_key(FL_Left):
             self.xv = max(-4, self.xv-0.7)
 
 
-        if ord("d") in self.keys:
+        if Fl.get_key(FL_Right):
             self.xv = min(4, self.xv+0.7)
         
         if self.states["S"]:
             self.yv = 0
-            if ord("w") in self.keys:
-                self.yv = -10
+            
             self.negwork(self.friction)
+
+        if Fl.get_key(ord("c")):
+            if self.jump and self.states["S"]:
+                self.yv = -10
+                self.jump = False
+
         if self.xv == 0 and self.yv == 0:
             return False
 
@@ -62,18 +68,11 @@ class player(Fl_Box):
     def handle(self, event):
         r = 0
         super().handle(event)
-        if FL_KEYDOWN:
-            self.keys.add(Fl.event_key())
-            r = 1
-        if FL_KEYUP:
-            nset = set()
-            for k in self.keys:
-                if Fl.get_key(k):
-                    nset.add(k)
-            self.keys = nset
-            r = 1
-                 
-       
+        if event == FL_KEYUP:
+            if Fl.event_key() == ord("c"):
+                self.jump = True
+                r = 1
+
         return r
     
     def reset(self):
