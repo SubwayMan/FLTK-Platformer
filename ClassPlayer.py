@@ -10,12 +10,12 @@ class player(Fl_Box):
         self.sprite = Fl_PNG_Image("tomatoboy.png")
         self.image(self.sprite.copy(w, h))
 
-        self.g = 0.5
+        self.g = 0.6
         self.Ox = x
         self.Oy = y
         self.reset()
         self.airres = 0.05
-        self.friction = 0.2
+        self.friction = 0.4
         self.states = dict((ch, False) for ch in "NESW")
         self.jump = True
         Fl.focus(self)
@@ -39,7 +39,7 @@ class player(Fl_Box):
 
         if Fl.get_key(ord("c")):
             if self.jump and self.states["S"]:
-                self.yv = -10
+                self.yv = -11
                 self.jump = False
 
         if self.xv == 0 and self.yv == 0:

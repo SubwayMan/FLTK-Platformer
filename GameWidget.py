@@ -52,12 +52,8 @@ class Solid_Block(Game_Object):
         dy = int(pl.Py - pl.y())
         if dx == 0 and dy == 0:
             return None
-        plfacedict = {
-            "N": (X[0], X[1]),
-            "S": (X[2], X[3]),
-            "E": (X[1], X[3]),
-            "W": (X[0], X[2])
-            }
+        
+        Nx, Ny = pl.Px, pl.Py
 
         coltype = ""
         if dx>0:
@@ -72,37 +68,42 @@ class Solid_Block(Game_Object):
             return False
         #print(coltype)
         for ch in coltype:
-
-            ans = self.face_push(pl, plfacedict[self.reflect[ch]], ch)
-            if ans == None:
-                continue
-            self.modify(pl, ch, ans)
+            a = self.face_push(pl, pl.x(), pl.y(), ch)
+            print(ch, a)
+            if a:
+                return True
+        return False
             
         
-    def face_push(self, pl, edge, id):
+    def face_push(self, pl, fx, fy, id):
         """Helper function for collision."""
-        if super().collis(pl, edge, []):
-            if id == "N":
-                return self.y()+self.h()
-            elif id == "S":
-                return self.y()-pl.h()
-            elif id == "W":
-                return self.x()-pl.w()
-            elif id == "E":
-                return self.x()+self.w()+1
+        sx, sy = self.x(), self.y()
+        sx2, sy2 = sx+self.w(), sy+self.h()
+        if id == "N":
+            if not ((fx<sx and fx+pl.w()<sx) or (fx>sx2 and fx+pl.w()>sx2)):
+                if pl.Py+pl.h()>=sy:
+                    pl.Py = (sy-pl.h())-1
+                    return True
+            
+        elif id == "S":
+            if not ((fx<sx and fx+pl.w()<sx) or (fx>sx2 and fx+pl.w()>sx2)):
+                if pl.Py<=sy2:
+                    pl.Py = sy2+1
+                    return True
+        elif id == "E":
+            if not ((fy<sy and fy+pl.h()<sy) or (fy>sy2 and fy+pl.h()>sy2)):
+                if pl.Px<=sx2:
+                    pl.Px = sx2+1
+                    return True
+        elif id == "W":
+            if not ((fy<sy and fy+pl.h()<sy) or (fy>sy2 and fy+pl.h()>sy2)):
+                if pl.Px+pl.w()>=sx:
+                    pl.Px = (sx-pl.w())-1
+                    return True
       
-        return None
+        return False
 
-    def modify(self, pl, ch, val):
-        """Another helper function designed to avoid repetition on face priority calculations."""
-        pl.states[ch] = True
-        if ch in "NS":
-            pl.Py = val
-            pl.yv = 0
-        elif ch in "EW":
-            pl.Px = val
-            pl.xv = 0
-
+    
 
 class Sawblade(Game_Object):
 
