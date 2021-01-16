@@ -1,5 +1,6 @@
 from fltk import *
 from GameWidget import *
+import math
 class player(Fl_Box):
     '''Initializes the player character and controls movement and graphics for it. Player is 16x * 32y.'''
 
@@ -82,6 +83,12 @@ class player(Fl_Box):
 
         return r
     
+    def cdist(self, coords) -> bool:
+        """Returns the distance between a point and player center, for use in collision calcs"""
+        xp = self.x()+(self.w()//2)
+        yp = self.y()+(self.w()//2)
+        return math.sqrt(math.pow(coords[0]-xp, 2)+math.pow(coords[1]-yp, 2))
+
     def reset(self):
 
         """death function: do something upon death (in this case, reset to original pos)"""
@@ -91,4 +98,5 @@ class player(Fl_Box):
         self.yv = 0
         self.Px = self.x()
         self.Py = self.y()
+
 

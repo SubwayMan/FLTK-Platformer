@@ -56,8 +56,14 @@ class Level(Fl_Group):
 
     def event_loop(self):
         self.chara.move()
+        self.objects.sort(key=lambda a: self.chara.cdist(a.Center()))
+        counter = 0
         for obj in self.objects:
-            self.collision(self.chara, obj)
+            a = self.collision(self.chara, obj)
+            if not a:
+                counter += 1
+            if counter >= 12:
+                break
         self.chara.refresh()
         Fl.repeat_timeout(0.015, self.event_loop)
 
