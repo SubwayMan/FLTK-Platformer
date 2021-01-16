@@ -18,15 +18,13 @@ class Game_Object(Fl_Box):
         Inherited by all game objects."""
         sx, sy = self.x(), self.y()
         sx2, sy2 = sx+self.w(), sy+self.h()
-        plx, ply = pl.x(), pl.y()
+        plx, ply = pl.Px, pl.Py
         plx2, ply2 = plx+pl.w(), ply+pl.h()
 
         if ply2<sy or ply>sy2 or plx2<sx or plx>sx2:
             return False
+
         return True
-
-
-                
 
 class Solid_Block(Game_Object):
     '''Class for solid surfaces (walls, floors)'''
@@ -48,14 +46,35 @@ class Solid_Block(Game_Object):
             }
         
         
-    def collis(self, pl, X, X0):
+    def collis(self, pl):
         '''Recieves a player object,
         then changes player's attributes accordingly. This method has to 
         be reimplemented throughout all game objects.'''
-        
-        
-        
-    
+        sx, sy = self.x(), self.y()
+        sx2, sy2 = sx+self.w(), sy+self.h()
+
+        isCol = super().collis(pl)
+        if isCol:
+            
+            if pl.y()+pl.h()<=sy:
+                #print("splat")
+                pl.Py = min(pl.Py, (sy-pl.h())-1)
+                pl.states["S"]=True
+            if pl.y()>=sy2:
+                #print("bonk")
+                pl.Py=max(pl.Py, sy2+1)
+                pl.states["N"]=True
+        isCol = super().collis(pl)
+        if isCol:
+            print("hmm")
+            if pl.x()>=sx2:
+                #print("rightouchie")
+                pl.Px = max(pl.Px, sx2+1)
+                pl.states["W"]=True
+            if pl.x()+pl.w()<=sx:
+                #print("lefttouchie")
+                pl.Px = min(pl.Px, (sx-pl.w())-1)
+                pl.states["E"]=True
 
     
 

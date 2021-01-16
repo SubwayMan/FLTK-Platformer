@@ -15,7 +15,7 @@ class player(Fl_Box):
         self.Oy = y
         self.reset()
         self.airres = 0.05
-        self.friction = 0.4
+        self.friction = 0.6
         self.states = dict((ch, False) for ch in "NESW")
         self.jump = True
         Fl.focus(self)
