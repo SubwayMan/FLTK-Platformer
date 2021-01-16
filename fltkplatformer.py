@@ -48,11 +48,8 @@ class Level(Fl_Group):
             player.Py = self.h()-player.h()
             player.states["S"] = True
 
-        px0, py0, pw, ph = player.x(), player.y(), player.w(), player.h()
-        px, py = player.Px, player.Py
-        pos0 = ((px0, py0), (px0+pw, py0), (px0, py0+ph), (px0+pw, py0+ph))
-        pos = ((px, py), (px+pw, py), (px, py+ph), (px+pw, py+ph))
-        obj.collis(player, pos0, pos)
+        
+        obj.collis(player)
 
 
     def event_loop(self):
@@ -111,7 +108,7 @@ class Framework(Fl_Double_Window):
             ".........................."
             ".........................."
             ".........................."
-            "...@........XX....X......."
+            "...@........^^....^......."
             ".........................."
             ""),
             (""

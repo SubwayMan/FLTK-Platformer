@@ -13,12 +13,17 @@ class Game_Object(Fl_Box):
         
         
 
-    def collis(self, pl, X, X0):
+    def collis(self, pl):
         """Base collison method that checks for player hitbox->object hitbox intersection.
         Inherited by all game objects."""
-        for p in X:
-            if self.x()<=p[0]<=self.x()+self.w() and self.y()<=p[1]<=self.y()+self.h():
-                return True
+        sx, sy = self.x(), self.y()
+        sx2, sy2 = sx+self.w(), sy+self.h()
+        plx, ply = pl.x(), pl.y()
+        plx2, ply2 = plx+pl.w(), ply+pl.h()
+
+        if ply2<sy or ply>sy2 or plx2<sx or plx>sx2:
+            return False
+        return True
 
 
                 
@@ -48,60 +53,9 @@ class Solid_Block(Game_Object):
         then changes player's attributes accordingly. This method has to 
         be reimplemented throughout all game objects.'''
         
-        dx = int(pl.Px - pl.x())
-        dy = int(pl.Py - pl.y())
-        if dx == 0 and dy == 0:
-            return None
         
-        Nx, Ny = pl.Px, pl.Py
-
-        coltype = ""
-        if dx>0:
-            coltype += "W"
-        elif dx < 0:
-            coltype += "E"
-        if dy>0:
-            coltype += "N"
-        elif dy < 0:
-            coltype += "S"
-        if not coltype:
-            return False
-        #print(coltype)
-        for ch in coltype:
-            a = self.face_push(pl, pl.x(), pl.y(), ch)
-            print(ch, a)
-            if a:
-                return True
-        return False
-            
         
-    def face_push(self, pl, fx, fy, id):
-        """Helper function for collision."""
-        sx, sy = self.x(), self.y()
-        sx2, sy2 = sx+self.w(), sy+self.h()
-        if id == "N":
-            if not ((fx<sx and fx+pl.w()<sx) or (fx>sx2 and fx+pl.w()>sx2)):
-                if pl.Py+pl.h()>=sy:
-                    pl.Py = (sy-pl.h())-1
-                    return True
-            
-        elif id == "S":
-            if not ((fx<sx and fx+pl.w()<sx) or (fx>sx2 and fx+pl.w()>sx2)):
-                if pl.Py<=sy2:
-                    pl.Py = sy2+1
-                    return True
-        elif id == "E":
-            if not ((fy<sy and fy+pl.h()<sy) or (fy>sy2 and fy+pl.h()>sy2)):
-                if pl.Px<=sx2:
-                    pl.Px = sx2+1
-                    return True
-        elif id == "W":
-            if not ((fy<sy and fy+pl.h()<sy) or (fy>sy2 and fy+pl.h()>sy2)):
-                if pl.Px+pl.w()>=sx:
-                    pl.Px = (sx-pl.w())-1
-                    return True
-      
-        return False
+    
 
     
 
@@ -112,8 +66,8 @@ class Sawblade(Game_Object):
         Game_Object.__init__(self, x, y, w, h, "sawblade.png")
         self.image(self.pic)
 
-    def collis(self, pl, X, X0):
-        if super().collis(pl, X, X0):
+    def collis(self, pl):
+        if super().collis(pl):
             pl.reset()
 
 class exitportal(Game_Object):
@@ -125,9 +79,9 @@ class exitportal(Game_Object):
         self.image(self.pic)
         self.nextlevelflag = False
 
-    def collis(self, pl, X, X0):
+    def collis(self, pl):
         '''exit collision detection, assuming the parent to
         this object will always be a game class'''
-        a = super().collis(pl, X, X0)
+        a = super().collis(pl)
 
 
