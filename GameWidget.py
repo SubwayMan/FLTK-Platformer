@@ -60,22 +60,28 @@ class Solid_Block(Game_Object):
                 #print("splat")
                 pl.Py = min(pl.Py, (sy-pl.h())-1)
                 pl.states["S"]=True
+                return True
             if pl.y()>=sy2:
                 #print("bonk")
                 pl.Py=max(pl.Py, sy2+1)
                 pl.states["N"]=True
+                pl.yv = 0
+                return True
         isCol = super().collis(pl)
         if isCol:
-            print("hmm")
             if pl.x()>=sx2:
                 #print("rightouchie")
                 pl.Px = max(pl.Px, sx2+1)
                 pl.states["W"]=True
+                pl.xv = 0
+                return True
             if pl.x()+pl.w()<=sx:
                 #print("lefttouchie")
                 pl.Px = min(pl.Px, (sx-pl.w())-1)
                 pl.states["E"]=True
-
+                pl.xv = 0
+                return True
+        return False
     
 
 class Sawblade(Game_Object):

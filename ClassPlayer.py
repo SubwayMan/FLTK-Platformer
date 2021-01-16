@@ -15,7 +15,7 @@ class player(Fl_Box):
         self.Oy = y
         self.reset()
         self.airres = 0.05
-        self.friction = 0.6
+        self.friction = 1.0
         self.states = dict((ch, False) for ch in "NESW")
         self.jump = True
         Fl.focus(self)
@@ -34,8 +34,8 @@ class player(Fl_Box):
         
         if self.states["S"]:
             self.yv = 0
+            fflag = True
             
-            self.negwork(self.friction)
 
         if Fl.get_key(ord("c")):
             if self.jump and self.states["S"]:
@@ -49,7 +49,8 @@ class player(Fl_Box):
         self.Py += self.yv
         
         self.negwork(self.airres)
-        
+        if fflag:
+            self.negwork(self.friction)
             
 
         for k in self.states:
