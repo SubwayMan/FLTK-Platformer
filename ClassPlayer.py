@@ -19,7 +19,7 @@ class player(Fl_Box):
         self.reset()
         self.airres = 0.05
 
-        self.friction = 1.0
+        self.friction = 1.2
 
         self.states = dict((ch, False) for ch in "NESW")
         self.jump = True
@@ -33,7 +33,6 @@ class player(Fl_Box):
 
         if Fl.get_key(FL_Left):
             self.xv = max(-4, self.xv-0.7)
-
 
         if Fl.get_key(FL_Right):
 

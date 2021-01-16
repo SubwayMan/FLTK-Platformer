@@ -114,10 +114,5 @@ class exitportal(Game_Object):
         self.nextlevelflag = False
 
 
-    def collis(self, pl):
-
-        '''exit collision detection, assuming the parent to
-        this object will always be a game class'''
-        a = super().collis(pl)
-
-
+   
+        

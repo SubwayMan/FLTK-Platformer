@@ -6,7 +6,7 @@ from time import sleep
 
 class Level(Fl_Group):
     """Level class that controls drawing and scheduling events for objects."""
-    def __init__(self, r, c, s, bg):
+    def __init__(self, r, c, s, bg, endfunc):
         #
         Fl_Group.__init__(self, 0, 0, 32*(c-2), 32*(r-2))
         self.objects = []
@@ -14,7 +14,9 @@ class Level(Fl_Group):
         self.idtomod = {
             "X": Solid_Block,
             "^": Sawblade,
+            "*": exitportal
             }
+        self.endfunc = endfunc
 
         self.begin()
         self.bg = Fl_Box(0, 0, 32*(c-2), 32*(r-2))
@@ -31,6 +33,7 @@ class Level(Fl_Group):
                     continue
                 newobj = self.idtomod[id]((col*32)-32, (row*32)-32, 32, 32)
                 self.objects.append(newobj)
+
         self.end()
         self.event_loop()
 
@@ -43,14 +46,7 @@ class Level(Fl_Group):
 
     def collision(self, player, obj):
         
-
-        
-        if player.Py > self.h()-player.h():
-            player.Py = self.h()-player.h()
-            player.states["S"] = True
-
-        
-        obj.collis(player)
+        return obj.collis(player)
    
 
 
@@ -59,9 +55,13 @@ class Level(Fl_Group):
         self.objects.sort(key=lambda a: self.chara.cdist(a.Center()))
         counter = 0
         for obj in self.objects:
+            
             a = self.collision(self.chara, obj)
-            if not a:
-                counter += 1
+            if type(obj)==exitportal and a:
+
+                self.endfunc()
+                return None
+            counter += 1
             if counter >= 12:
                 break
         self.chara.refresh()
@@ -83,7 +83,7 @@ class Framework(Fl_Double_Window):
             "XXXXXXXXXXXXXXXXXX"
             "X................X"
             "XXXXX............X"
-            "X........X.......X"
+            "X........XX......X"
             "X........X.......X"
             "X.....X^^X......*X"
             "X.....X......XXXXX"
@@ -99,6 +99,27 @@ class Framework(Fl_Double_Window):
             "XXXXXXXXXXXXXXXXXX"
             "XXXXXXXXXXXXXXXXXX"
             ""), 
+            
+            (""
+            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
+            "X........................X"
+            "X........XXX.............X"
+            "X.............XX.^.XX....X"
+            "X...............^.^.....^X"
+            "X..XX^...........^.......X"
+            "X.......XXX..............X"
+            "X.............X..^......XX"
+            "X.............X..^....X^.X"
+            "X.............X....^.....X"
+            "X.....X^...XX^X....X.....X"
+            "X.X........^.......X.....X"
+            "X..........^*....^.X^^...X"
+            "X....XXX...XXX...X.......X"
+            "X..........X.....X.......X"
+            "X..........X.........^^XXX"
+            "X@.X..XXX^^X.............X"
+            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
+            ""),
             (""
 
             "XXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -120,29 +141,9 @@ class Framework(Fl_Double_Window):
             "X..@.........^^..........X"
             "XXXXXXXXXXXXXXXXXXXXXXXXXX"
 
-            ""),
-            (""
-            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
-            "X........................X"
-            "X........XXX.............X"
-            "X.............XX.^.XX....X"
-            "X...............^.^.....^X"
-            "X..XX^...........^.......X"
-            "X.......XXX..............X"
-            "X.............X.........XX"
-            "X.............X.......X^.X"
-            "X.............X..........X"
-            "X.....X^...XX^X..........X"
-            "X.X........^.............X"
-            "X..........^.............X"
-            "X....XXX...X.............X"
-            "X..........X.............X"
-            "X..........X.............X"
-            "X..X..XXX^^X.............X"
-            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
             "")]
 
-        self.dim = [(16, 16), (16, 24)]
+        self.dim = [(16, 16), (16, 24), (16, 24)]
         self.timeline()
         self.show()
         Fl.run()
@@ -155,7 +156,7 @@ class Framework(Fl_Double_Window):
               
         s = self.dim[self.state]
         self.begin()
-        self.level = Level(s[0]+2, s[1]+2, self.levels[self.state], "background1.jpg")
+        self.level = Level(s[0]+2, s[1]+2, self.levels[self.state], "background1.jpg", self.timeline)
         self.resize(self.x(), self.y(), s[1]*32, s[0]*32)
         self.state += 1
             
