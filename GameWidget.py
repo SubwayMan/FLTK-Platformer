@@ -10,8 +10,7 @@ class Game_Object(Fl_Box):
             self.pic = Fl_JPEG_Image(sprite)
         elif sprite.endswith(".png"):
             self.pic = Fl_PNG_Image(sprite)
-        
-        
+
 
     def collis(self, pl):
         """Base collison method that checks for player hitbox->object hitbox intersection.
@@ -25,6 +24,7 @@ class Game_Object(Fl_Box):
             return False
 
         return True
+
 
 class Solid_Block(Game_Object):
     '''Class for solid surfaces (walls, floors)'''
@@ -84,6 +84,7 @@ class Solid_Block(Game_Object):
         return False
     
 
+
 class Sawblade(Game_Object):
 
     '''Your standard, run of the mill stationary hazard.'''
@@ -91,9 +92,11 @@ class Sawblade(Game_Object):
         Game_Object.__init__(self, x, y, w, h, "sawblade.png")
         self.image(self.pic)
 
+
     def collis(self, pl):
         if super().collis(pl):
             pl.reset()
+
 
 class exitportal(Game_Object):
     
@@ -104,7 +107,9 @@ class exitportal(Game_Object):
         self.image(self.pic)
         self.nextlevelflag = False
 
+
     def collis(self, pl):
+
         '''exit collision detection, assuming the parent to
         this object will always be a game class'''
         a = super().collis(pl)

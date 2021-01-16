@@ -10,12 +10,16 @@ class player(Fl_Box):
         self.sprite = Fl_PNG_Image("tomatoboy.png")
         self.image(self.sprite.copy(w, h))
 
+
         self.g = 0.6
+
         self.Ox = x
         self.Oy = y
         self.reset()
         self.airres = 0.05
+
         self.friction = 1.0
+
         self.states = dict((ch, False) for ch in "NESW")
         self.jump = True
         Fl.focus(self)
@@ -23,6 +27,7 @@ class player(Fl_Box):
     def move(self):
 
         fflag = False
+
         self.yv = min(self.yv+self.g, 20)
 
         if Fl.get_key(FL_Left):
@@ -30,6 +35,7 @@ class player(Fl_Box):
 
 
         if Fl.get_key(FL_Right):
+
             self.xv = min(4, self.xv+0.7)
         
         if self.states["S"]:
@@ -55,7 +61,7 @@ class player(Fl_Box):
 
         for k in self.states:
             self.states[k] = False
-        return True
+
     
     def refresh(self):
         self.position(int(self.Px), int(self.Py))
@@ -77,7 +83,9 @@ class player(Fl_Box):
         return r
     
     def reset(self):
+
         """death function: do something upon death (in this case, reset to original pos)"""
+
         self.position(self.Ox, self.Oy)
         self.xv = 0
         self.yv = 0
