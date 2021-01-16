@@ -11,8 +11,6 @@ class Game_Object(Fl_Box):
         elif sprite.endswith(".png"):
             self.pic = Fl_PNG_Image(sprite)
         
-        
-
     def collis(self, pl):
         """Base collison method that checks for player hitbox->object hitbox intersection.
         Inherited by all game objects."""
@@ -23,8 +21,13 @@ class Game_Object(Fl_Box):
 
         if ply2<sy or ply>sy2 or plx2<sx or plx>sx2:
             return False
-
         return True
+
+    def Center(self)->(int, int):
+        """A method that returns coordinates of center point, for use in distance calculations."""
+        a = self.x()+(self.w()//2)
+        b = self.y()+(self.h()//2)
+        return(a, b)
 
 class Solid_Block(Game_Object):
     '''Class for solid surfaces (walls, floors)'''
