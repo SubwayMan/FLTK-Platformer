@@ -10,39 +10,58 @@ class player(Fl_Box):
         self.sprite = Fl_PNG_Image("tomatoboy.png")
         self.image(self.sprite.copy(w, h))
 
-        self.g = 0.5
+
+        self.g = 0.6
+
         self.Ox = x
         self.Oy = y
         self.reset()
         self.airres = 0.05
-        self.friction = 0.2
+
+        self.friction = 1.0
+
         self.states = dict((ch, False) for ch in "NESW")
-        self.keys = set()
+        self.jump = True
+        Fl.focus(self)
              
     def move(self):
 
         fflag = False
-        if ord("a") in self.keys:
+
+        self.yv = min(self.yv+self.g, 20)
+
+        if Fl.get_key(FL_Left):
             self.xv = max(-4, self.xv-0.7)
 
 
-        if ord("d") in self.keys:
+        if Fl.get_key(FL_Right):
+
             self.xv = min(4, self.xv+0.7)
         
-        if self.y()+self.h()>=self.parent().h():
-            if ord("w") in self.keys:
-                self.yv = -10
+        if self.states["S"]:
+            self.yv = 0
             fflag = True
+            
 
-        self.yv += self.g
+        if Fl.get_key(ord("c")):
+            if self.jump and self.states["S"]:
+                self.yv = -11
+                self.jump = False
+
+        if self.xv == 0 and self.yv == 0:
+            return False
+
         self.Px += self.xv
         self.Py += self.yv
-   
+        
         self.negwork(self.airres)
-
         if fflag:
             self.negwork(self.friction)
-        return True
+            
+
+        for k in self.states:
+            self.states[k] = False
+
     
     def refresh(self):
         self.position(int(self.Px), int(self.Py))
@@ -52,27 +71,21 @@ class player(Fl_Box):
         if self.xv == 0:
             return None
         self.xv -= (self.xv/abs(self.xv))*min(n, abs(self.xv))
-
+      
     def handle(self, event):
         r = 0
         super().handle(event)
-        if FL_KEYDOWN:
-            self.keys.add(Fl.event_key())
-            r = 1
-        if FL_KEYUP:
-            nset = set()
-            for k in self.keys:
-                if Fl.get_key(k):
-                    nset.add(k)
-            self.keys = nset
-            r = 1
-                 
-       
-        return r
-            
+        if event == FL_KEYUP:
+            if Fl.event_key() == ord("c"):
+                self.jump = True
+                r = 1
 
-    #death function: do something upon death (in this case, reset to original pos)
+        return r
+    
     def reset(self):
+
+        """death function: do something upon death (in this case, reset to original pos)"""
+
         self.position(self.Ox, self.Oy)
         self.xv = 0
         self.yv = 0
