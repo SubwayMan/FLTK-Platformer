@@ -114,10 +114,10 @@ class Framework(Fl_Double_Window):
             "X................X"
             "X................X"
             "X................X"
-            "X...=..=..=..*...X"
-            "X...X..X..X..X...X"
-            "X...X..X..X..X...X"
-            "X@..X..X..X..X...X"                 
+            "X...=..=..=..=..*X"
+            "X...X^^X^^X^^X^^XX"
+            "X...X..X..X..X..XX"
+            "X@..X..X..X..X..XX"                 
             "XXXXXXXXXXXXXXXXXX"
             ""), 
             
