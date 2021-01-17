@@ -17,7 +17,7 @@ class player(Fl_Box):
         self.Ox = x
         self.Oy = y
         self.reset()
-        self.airres = 0.05
+        self.airres = 0.1
 
         self.friction = 0.8
         self.appliedxv = 0.4

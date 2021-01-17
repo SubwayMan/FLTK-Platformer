@@ -25,7 +25,7 @@ class Game_Object(Fl_Box):
         plx, ply = pl.Px, pl.Py
         plx2, ply2 = plx+pl.w(), ply+pl.h()
 
-        if ply2<sy or ply>sy2 or plx2<sx or plx>sx2:
+        if ply2<sy or ply>=sy2 or plx2<sx or plx>=sx2:
             return False
         return True
 
@@ -68,12 +68,12 @@ class Solid_Block(Game_Object):
             
             if pl.y()+pl.h()<=sy:
 
-                pl.Py = min(pl.Py, (sy-pl.h())-1)
+                pl.Py = min(pl.Py, (sy-pl.h()))
                 pl.states["S"]=True
                 return True
             if pl.y()>=sy2:
 
-                pl.Py=max(pl.Py, sy2+1)
+                pl.Py=max(pl.Py, sy2)
                 pl.states["N"]=True
                 pl.yv = 0
                 return True
