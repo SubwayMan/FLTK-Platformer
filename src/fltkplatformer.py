@@ -77,100 +77,19 @@ class Framework(Fl_Double_Window):
         """Initialize window drawing and preparation"""
 
         Fl_Double_Window.__init__(self, 512, 768, title)
-        self.state = 0
+        self.state = 2
         self.level = None
-        #standard textmap of each level
-        self.levels = [(""
-            "XXXXXXXXXXXXXXXXXX"
-            "X................X"
-            "XXXXX............X"
-            "X........XX......X"
-            "X........X.......X"
-            "X.....X^^X......*X"
-            "X.....X......XXXXX"
-            "X..X^^X..........X"
-            "X..X.............X"
-            "X................X"
-            "XX......X^X......X"
-            "XXXXXXXXXXXX.....X"
-            "X................X"
-            "X.............X..X"
-            "X.........X...X..X"
-            "X.@....X^^X...X..X"
-            "XXXXXXXXXXXXXXXXXX"
-            "XXXXXXXXXXXXXXXXXX"
-            ""), 
-            (""
-            "XXXXXXXXXXXXXXXXXX"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X................X"
-            "X.....^..^..^..^.X"
-            "X.....^..^..^..^.X"
-            "X.....^..^..^..^.X"
-            "X...==^==^==^==^*X"
-            "X...XX^XX^XX^XX^XX"
-            "X...XX.XX.XX.XX.XX"
-            "X@..XX.XX.XX.XX.XX"                 
-            "XXXXXXXXXXXXXXXXXX"
-            ""), 
-            
-            (""
-            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
-            "X........................X"
-            "X........XXX.............X"
-            "X.............XX.^.XX....X"
-            "X...............^.^.....^X"
-            "X..XX^...........^.......X"
-            "X.......XXX..............X"
-            "X.............X..^......XX"
-            "X.............X..^....X^.X"
-            "X.............X....^.....X"
-            "X.....X^...XX^X....X.....X"
-            "X.X........^.......X.....X"
-            "X..........^*....^.X^^...X"
-            "X....XXX...XXX...X.......X"
-            "X..........X.....X.......X"
-            "X..........X.........^^XXX"
-            "X@.X..XXX^^X.............X"
-            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
-            ""),
-            (""
-
-            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X........................X"
-            "X..@.........^^..........X"
-            "XXXXXXXXXXXXXXXXXXXXXXXXXX"
-
-            "")]
-
-        self.dim = [(16, 16), (16, 16), (16, 24), (16, 24)]
+        #load levels from text file
+        
+        self.levels = open("levels.txt", "r").read().replace("\n", "").split("EL")
+        self.dim = [(16, 16), (16, 16), (16, 24)]
         self.timeline()
         self.show()
         Fl.run()
 
         
     def timeline(self):
+        #print(self.levels[self.state] == self.bruh[self.state])
         if self.level:
             Fl.remove_timeout(self.level.event_loop)
             Fl.delete_widget(self.level)

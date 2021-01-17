@@ -128,5 +128,6 @@ class jumppad(Game_Object):
         if super().collis(pl):
             pl.yv = -15
             pl.xv /= 5
+            pl.Py -= 2
 
         
