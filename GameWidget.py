@@ -114,5 +114,14 @@ class exitportal(Game_Object):
         self.nextlevelflag = False
 
 
-   
+class jumppad(Game_Object):
+    """A typical 'trampoline' element."""
+    def __init__(self, x, y, w, h):
+        Game_Object.__init__(self, x, y+(h//2), w, h//2, "jumppad.png")
+        self.image(self.pic)
+
+    def collis(self, pl):
+        if super().collis(pl):
+            pl.yv = -18
+
         

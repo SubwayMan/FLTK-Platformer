@@ -14,7 +14,8 @@ class Level(Fl_Group):
         self.idtomod = {
             "X": Solid_Block,
             "^": Sawblade,
-            "*": exitportal
+            "*": exitportal,
+            "=": jumppad
             }
         self.endfunc = endfunc
 
@@ -99,6 +100,26 @@ class Framework(Fl_Double_Window):
             "XXXXXXXXXXXXXXXXXX"
             "XXXXXXXXXXXXXXXXXX"
             ""), 
+            (""
+            "XXXXXXXXXXXXXXXXXX"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X................X"
+            "X...=..=..=..*...X"
+            "X...X..X..X..X...X"
+            "X...X..X..X..X...X"
+            "X@..X..X..X..X...X"                 
+            "XXXXXXXXXXXXXXXXXX"
+            ""), 
             
             (""
             "XXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -143,7 +164,7 @@ class Framework(Fl_Double_Window):
 
             "")]
 
-        self.dim = [(16, 16), (16, 24), (16, 24)]
+        self.dim = [(16, 16), (16, 16), (16, 24), (16, 24)]
         self.timeline()
         self.show()
         Fl.run()
