@@ -1,11 +1,14 @@
 from fltk import *
 from ClassPlayer import *
+from globals import *
+import os	
 class Game_Object(Fl_Box):
     '''parent class for all game objects.'''
-    def __init__(self, x, y, w, h, sprite):
+    def __init__(self, x, y, w, h, spr):
         '''typical init function'''
         Fl_Box.__init__(self, x, y, w, h)
-        self.debugsprite = Fl_PNG_Image("debug.png")
+        sprite = os.path.join(ASSETS, spr)
+        self.debugsprite = Fl_PNG_Image(os.path.join(ASSETS, "debug.png"))
         if sprite.endswith(".jpg"):
             self.pic = Fl_JPEG_Image(sprite)
         elif sprite.endswith(".png"):
@@ -63,12 +66,12 @@ class Solid_Block(Game_Object):
         if isCol:
             
             if pl.y()+pl.h()<=sy:
-                #print("splat")
+
                 pl.Py = min(pl.Py, (sy-pl.h())-1)
                 pl.states["S"]=True
                 return True
             if pl.y()>=sy2:
-                #print("bonk")
+
                 pl.Py=max(pl.Py, sy2+1)
                 pl.states["N"]=True
                 pl.yv = 0
@@ -77,13 +80,13 @@ class Solid_Block(Game_Object):
         
         if isCol:
             if pl.x()>=sx2:
-                #print("rightouchie")
+
                 pl.Px = max(pl.Px, sx2+1)
                 pl.states["W"]=True
                 pl.xv = 0
                 return True
             if pl.x()+pl.w()<=sx:
-                #print("lefttouchie")
+              
                 pl.Px = min(pl.Px, (sx-pl.w())-1)
                 pl.states["E"]=True
                 pl.xv = 0
@@ -112,7 +115,7 @@ class exitportal(Game_Object):
         '''initialize object'''
         Game_Object.__init__(self, x, y, w, h, "treasurechest.png")
         self.image(self.pic)
-        self.nextlevelflag = False
+
 
 
 class jumppad(Game_Object):

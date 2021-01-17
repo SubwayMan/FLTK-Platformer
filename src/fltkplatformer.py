@@ -1,8 +1,8 @@
 
 from fltk import *
+from globals import *
 from GameWidget import *
-#from ClassPlayer import *
-from time import sleep
+
 
 class Level(Fl_Group):
     """Level class that controls drawing and scheduling events for objects."""
@@ -21,7 +21,7 @@ class Level(Fl_Group):
 
         self.begin()
         self.bg = Fl_Box(0, 0, 32*(c-2), 32*(r-2))
-        self.bg.image(Fl_JPEG_Image(bg).copy(self.bg.w(), self.bg.h()))
+        self.bg.image(Fl_JPEG_Image(os.path.join(ASSETS, bg)).copy(self.bg.w(), self.bg.h()))
         
         for row in range(r):
             for col in range(c):

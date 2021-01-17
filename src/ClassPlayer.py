@@ -1,5 +1,5 @@
 from fltk import *
-from GameWidget import *
+from globals import *
 import math
 class player(Fl_Box):
     '''Initializes the player character and controls movement and graphics for it. Player is 16x * 32y.'''
@@ -8,7 +8,7 @@ class player(Fl_Box):
         '''Standard initializer giving values for xpos, ypos, while setting 
         gravity, xvelocity and yvelocity (g, xv, yv) to 0.'''
         Fl_Box.__init__(self, x, y, w, h)
-        self.sprite = Fl_PNG_Image("tomatoboy.png")
+        self.sprite = Fl_PNG_Image(os.path.join(ASSETS, "tomatoboy.png"))
         self.image(self.sprite.copy(w, h))
 
 
