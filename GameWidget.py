@@ -74,7 +74,7 @@ class Solid_Block(Game_Object):
                 pl.yv = 0
                 return True
         isCol = super().collis(pl)
-
+        
         if isCol:
             if pl.x()>=sx2:
                 #print("rightouchie")
@@ -123,6 +123,7 @@ class jumppad(Game_Object):
 
     def collis(self, pl):
         if super().collis(pl):
-            pl.yv = -14
+            pl.yv = -15
+            pl.xv /= 5
 
         

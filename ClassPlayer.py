@@ -17,10 +17,10 @@ class player(Fl_Box):
         self.Ox = x
         self.Oy = y
         self.reset()
-        self.airres = 0.7
+        self.airres = 0.05
 
         self.friction = 0.8
-
+        self.appliedxv = 0.4
         self.states = dict((ch, False) for ch in "NESW")
         self.jump = True
         Fl.focus(self)
@@ -29,39 +29,43 @@ class player(Fl_Box):
 
         fflag = False
 
-        
-
         if Fl.get_key(FL_Left):
-            self.xv = max(-8, self.xv-0.9)
+            self.xv = max(-4, self.xv-self.appliedxv)
 
         elif Fl.get_key(FL_Right):
 
-            self.xv = min(8, self.xv+0.9)
+            self.xv = min(4, self.xv+self.appliedxv)
         else:
             if self.states["S"]:
                 fflag = True
         
         if not self.states["S"]:
             
-            self.yv = min(self.yv+self.g, 20)
+            self.yv = min(self.yv+self.g, 16)
         else:
+            if not self.appliedxv:
+                self.enable_inp()
+                Fl.remove_timeout(self.enable_inp)
             self.yv = 1
 
 
         if Fl.get_key(ord("c")):
-            if self.jump:
-                print(self.states)
+          
             if self.jump and self.states["S"]:
                 self.yv = -11
                 self.jump = False
             elif self.jump and self.states["E"]:
-                self.yv = -7
+                self.yv = -9
                 self.xv = -5
                 self.jump = False
+                self.appliedxv = 0
+                Fl.repeat_timeout(0.2, self.enable_inp)
             elif self.jump and self.states["W"]:
-                self.yv = -7
+                self.yv = -9
                 self.xv = 5
                 self.jump = False
+                self.appliedxv = 0
+                Fl.repeat_timeout(0.2, self.enable_inp)
 
         if self.xv == 0 and self.yv == 0:
             return False
@@ -74,8 +78,11 @@ class player(Fl_Box):
             self.negwork(self.friction)
             
 
-        for k in self.states:
+        for k in "NS":
             self.states[k] = False
+        if int(self.Px)!=self.x():
+            self.states["E"] = False
+            self.states["W"] = False
 
     
     def refresh(self):
@@ -112,5 +119,8 @@ class player(Fl_Box):
         self.yv = 0
         self.Px = self.x()
         self.Py = self.y()
+
+    def enable_inp(self):
+        self.appliedxv = 0.4
 
 
