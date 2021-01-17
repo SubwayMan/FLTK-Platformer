@@ -1,6 +1,6 @@
 from fltk import *
 from ClassPlayer import *
-from globals import *
+from globs import *
 import os	
 class Game_Object(Fl_Box):
     '''parent class for all game objects.'''
@@ -13,6 +13,7 @@ class Game_Object(Fl_Box):
             self.pic = Fl_JPEG_Image(sprite)
         elif sprite.endswith(".png"):
             self.pic = Fl_PNG_Image(sprite)
+        self.image(self.pic.copy(w, h))
         
         
 
@@ -42,7 +43,7 @@ class Solid_Block(Game_Object):
     def __init__(self, x, y, w, h):
         '''typical init function'''
         Game_Object.__init__(self, x, y, w, h, "platformblock.jpg")     
-        self.image(self.pic)
+ 
         #print(f"block created at {x}, {y}")
         self.reflect = dict((f, g) for f, g in zip("NESW", "SWNE"))
         #a face is represented by its type, its lower bound, its upper bound, and its plane location
@@ -100,7 +101,7 @@ class Sawblade(Game_Object):
     '''Your standard, run of the mill stationary hazard.'''
     def __init__(self, x, y, w, h):
         Game_Object.__init__(self, x, y, w, h, "sawblade.png")
-        self.image(self.pic)
+
 
 
     def collis(self, pl):
@@ -114,7 +115,7 @@ class exitportal(Game_Object):
     def __init__(self, x, y, w, h):
         '''initialize object'''
         Game_Object.__init__(self, x, y, w, h, "treasurechest.png")
-        self.image(self.pic)
+
 
 
 
@@ -122,7 +123,7 @@ class jumppad(Game_Object):
     """A typical 'trampoline' element."""
     def __init__(self, x, y, w, h):
         Game_Object.__init__(self, x, y+(h//2), w, h//2, "jumppad.png")
-        self.image(self.pic)
+
 
     def collis(self, pl):
         if super().collis(pl):
@@ -130,4 +131,14 @@ class jumppad(Game_Object):
             pl.xv /= 5
             pl.Py -= 2
 
-        
+class chest_key(Game_Object):
+    """Keys that enable or disable the chest that transports to the next level."""
+    def __init__(self, x, y, w, h):
+        Game_Object.__init__(self, x, y+(h//2), w, h//2, "key.png")
+
+
+    def collis(self, pl):
+        if super().collis(pl):
+            pl.keys += 1
+            return True
+        return False

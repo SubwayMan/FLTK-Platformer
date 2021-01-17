@@ -1,5 +1,5 @@
 from fltk import *
-from globals import *
+from globs import *
 import math
 class player(Fl_Box):
     '''Initializes the player character and controls movement and graphics for it. Player is 16x * 32y.'''
@@ -23,6 +23,8 @@ class player(Fl_Box):
         self.appliedxv = 0.4
         self.states = dict((ch, False) for ch in "NESW")
         self.jump = True
+        self.keys = 0
+        self.needed_keys = 0
         Fl.focus(self)
              
     def move(self):

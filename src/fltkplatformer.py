@@ -1,6 +1,6 @@
 
 from fltk import *
-from globals import *
+from globs import *
 from GameWidget import *
 
 
@@ -15,7 +15,8 @@ class Level(Fl_Group):
             "X": Solid_Block,
             "^": Sawblade,
             "*": exitportal,
-            "=": jumppad
+            "=": jumppad,
+            "k": chest_key
             }
         self.endfunc = endfunc
 
@@ -23,6 +24,7 @@ class Level(Fl_Group):
         self.bg = Fl_Box(0, 0, 32*(c-2), 32*(r-2))
         self.bg.image(Fl_JPEG_Image(os.path.join(ASSETS, bg)).copy(self.bg.w(), self.bg.h()))
         
+        keys = 0
         for row in range(r):
             for col in range(c):
                 
@@ -30,11 +32,14 @@ class Level(Fl_Group):
                 if id == "@":
                     self.chara = player((col*32)-32, (row*32)-32, 16, 32)
 
+                if id == "k":
+                    keys += 1
                 if id not in self.idtomod:
                     continue
                 newobj = self.idtomod[id]((col*32)-32, (row*32)-32, 32, 32)
                 self.objects.append(newobj)
 
+        self.chara.needed_keys = keys
         self.end()
         self.event_loop()
 
@@ -55,13 +60,16 @@ class Level(Fl_Group):
         self.chara.move()
         self.objects.sort(key=lambda a: self.chara.cdist(a.Center()))
         counter = 0
-        for obj in self.objects:
+        for ind, obj in enumerate(self.objects):
             
             a = self.collision(self.chara, obj)
-            if type(obj)==exitportal and a:
-
-                self.endfunc()
-                return None
+            if isinstance(obj, exitportal) and a:
+                if self.chara.keys >= self.chara.needed_keys:
+                    self.endfunc()
+                    return None
+            elif isinstance(obj, chest_key) and a:
+                Fl.delete_widget(obj)
+                self.objects.pop(ind)
             counter += 1
             if counter >= 12:
                 break
@@ -82,7 +90,7 @@ class Framework(Fl_Double_Window):
         #load levels from text file
         
         self.levels = open("levels.txt", "r").read().replace("\n", "").split("EL")
-        self.dim = [(16, 16), (16, 16), (16, 24)]
+        self.dim = [(16, 16), (16, 16), (16, 24), (16, 16)]
         self.timeline()
         self.show()
         Fl.run()
