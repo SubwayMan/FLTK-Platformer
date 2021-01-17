@@ -85,7 +85,7 @@ class Framework(Fl_Double_Window):
         """Initialize window drawing and preparation"""
 
         Fl_Double_Window.__init__(self, 512, 768, title)
-        self.state = 2
+        self.state = 0
         self.level = None
         #load levels from text file
         
