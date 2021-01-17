@@ -100,7 +100,7 @@ class Sawblade(Game_Object):
 
     '''Your standard, run of the mill stationary hazard.'''
     def __init__(self, x, y, w, h):
-        Game_Object.__init__(self, x, y, w, h, "sawblade.png")
+        Game_Object.__init__(self, x+1, y+1, w-2, h-2, "sawblade.png")
 
 
 
@@ -134,7 +134,7 @@ class jumppad(Game_Object):
 class chest_key(Game_Object):
     """Keys that enable or disable the chest that transports to the next level."""
     def __init__(self, x, y, w, h):
-        Game_Object.__init__(self, x, y+(h//2), w, h//2, "key.png")
+        Game_Object.__init__(self, x, y, w, h, "key.png")
 
 
     def collis(self, pl):
