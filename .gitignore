@@ -4,3 +4,5 @@ fltkplatformer.pyproj
 .fltkplatformer.py.swp
 .vs/
 fltkplatformer.sln
+/src/__pycache__/
+
