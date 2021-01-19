@@ -90,7 +90,7 @@ class Framework(Fl_Double_Window):
         #load levels from text file
         
         self.levels = open("levels.txt", "r").read().replace("\n", "").split("EL")
-        self.dim = [(16, 16), (16, 16), (16, 24), (16, 16)]
+        self.dim = [(16, 16), (16, 16), (16, 24), (10, 10), (16, 10), (16, 16)]
         self.timeline()
         self.show()
         Fl.run()

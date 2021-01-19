@@ -44,7 +44,7 @@ class player(Fl_Box):
         
         if not self.states["S"]:
             
-            self.yv = min(self.yv+self.g, 16)
+            self.yv = min(self.yv+self.g, 10)
         else:
             if not self.appliedxv:
                 self.enable_inp()
@@ -58,14 +58,14 @@ class player(Fl_Box):
                 self.yv = -11
                 self.jump = False
             elif self.jump and self.states["E"]:
-                self.yv = -9
-                self.xv = -5
+                self.yv = -11
+                self.xv = -6
                 self.jump = False
                 self.appliedxv = 0
                 Fl.repeat_timeout(0.2, self.enable_inp)
             elif self.jump and self.states["W"]:
-                self.yv = -9
-                self.xv = 5
+                self.yv = -11
+                self.xv = 6
                 self.jump = False
                 self.appliedxv = 0
                 Fl.repeat_timeout(0.2, self.enable_inp)
