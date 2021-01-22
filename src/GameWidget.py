@@ -2,64 +2,78 @@ from fltk import *
 from ClassPlayer import *
 from globs import *
 import os	
+#---------------------------HEADER-----------------------------
+#This file contains the classes for the game objects.
+#This refers to static, non-user-controlled instances.
+#Expected handling: Collision mechanics. Most objects will expect 
+#a player class being passed in some form.
+#All objects inherit default collision and basic image/graphic management.
+
 class Game_Object(Fl_Box):
-    '''parent class for all game objects.'''
-    def __init__(self, x, y, w, h, spr):
-        '''typical init function'''
+    """Parent class for all game objects. Handles drawing of all subclasses. Inheriting from blank
+box method. Constructor args:
+- x, y, w, h: dimensions,
+- spr: sprite to pull from ASSETS directory.
+"""
+    def __init__(self, x, y, w, h, spr) -> None:
+        """Constructor."""
+        #initialize Fl_Box superclass
         Fl_Box.__init__(self, x, y, w, h)
+        #Load the location of the sprite by pulling asset directory location from globals
         sprite = os.path.join(ASSETS, spr)
+        #This is a debugging sprite that any game object can call/use
         self.debugsprite = Fl_PNG_Image(os.path.join(ASSETS, "debug.png"))
+        #Now defunct legacy code for image management. Will switch to solely PNGs soon
         if sprite.endswith(".jpg"):
             self.pic = Fl_JPEG_Image(sprite)
         elif sprite.endswith(".png"):
             self.pic = Fl_PNG_Image(sprite)
+        #Resize given image to widget bounding box
         self.image(self.pic.copy(w, h))
         
         
 
-    def collis(self, pl):
-        """Base collison method that checks for player hitbox->object hitbox intersection.
-        Inherited by all game objects."""
+    def collis(self, pl) -> bool:
+        """Base collison method that checks for player hitbox -> object hitbox intersection.
+    Inherited by all game objects. Convention is for any collision method to return a 
+    boolean value."""
+        #Grab our point coordinates, in order NW, NE, SW, SE.
         sx, sy = self.x(), self.y()
         sx2, sy2 = sx+self.w(), sy+self.h()
+        #See previous comment, but for the player's bounding box.
         plx, ply = pl.Px, pl.Py
         plx2, ply2 = plx+pl.w(), ply+pl.h()
-
+        #Main collision check. Returns False if:
+        #player east edge to west of self west edge,
+        #player west edge to east of self east edge,
+        #player south edge north of self north edge,
+        #player north edge south of self south edge.
         if ply2<sy or ply>=sy2 or plx2<sx or plx>=sx2:
             return False
+        #If all those checks fail, return a valid collision result.
         return True
 
     def Center(self)->(int, int):
-        """A method that returns coordinates of center point, for use in distance calculations."""
+        """A method that returns coordinates of center point, for
+use in distance calculations."""
         a = self.x()+(self.w()//2)
         b = self.y()+(self.h()//2)
         return(a, b)
 
 
 class Solid_Block(Game_Object):
-    '''Class for solid surfaces (walls, floors)'''
-    #load sprite
-
-    def __init__(self, x, y, w, h):
-        '''typical init function'''
+    """Block game object, Main object for interaction between 
+player and canvas, base of all platforming elements. Responsible for 
+pushing back the player, and allowing player to jump/walljump."""
+ 
+    def __init__(self, x, y, w, h) -> None:
+        """Constructor. Sprite is already supplied, takes basic dimension arguments."""
         Game_Object.__init__(self, x, y, w, h, "platformblock.jpg")     
  
-        #print(f"block created at {x}, {y}")
-        self.reflect = dict((f, g) for f, g in zip("NESW", "SWNE"))
-        #a face is represented by its type, its lower bound, its upper bound, and its plane location
-        #ex. a face ("HOR", 10, 20, 60) is a horizontal surface from x10->20 located at y 60
-        self.faces = {
-            "N": (x, x+w, y),
-            "S": (x, x+w, y+h),
-            "W": (y, y+h, x),
-            "E": (y, y+h, x+w),
-            }
         
-        
-    def collis(self, pl):
-        '''Recieves a player object,
-        then changes player's attributes accordingly. This method has to 
-        be reimplemented throughout all game objects.'''
+    def collis(self, pl) -> bool:
+        """Special block specific block -> player collision method.
+Alters inputted player's requested input depending on collision."""
         sx, sy = self.x(), self.y()
         sx2, sy2 = sx+self.w(), sy+self.h()
 
