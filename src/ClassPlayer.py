@@ -62,7 +62,7 @@ class player(Fl_Box):
                 self.xv = -6
                 self.jump = False
                 self.appliedxv = 0
-                Fl.repeat_timeout(0.2, self.enable_inp)
+                Fl.repeat_timeout(0.1, self.enable_inp)
             elif self.jump and self.states["W"]:
                 self.yv = -11
                 self.xv = 6
