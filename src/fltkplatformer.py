@@ -131,7 +131,7 @@ graphics, running the game, and the event loop."""
     def __init__(self, title = "Simple Platformer") -> None:
         """Constructor - Initialize window drawing and preparation"""
 
-        Fl_Double_Window.__init__(self, 512, 768, title)
+        Fl_Double_Window.__init__(self, 512, 512, title)
         #Level state, level variables 
         self.state = 0
         self.level = None
@@ -139,14 +139,21 @@ graphics, running the game, and the event loop."""
         self.levels = open("levels.txt", "r").read().replace("\n", "").split("EL")
         #Store level dimensions 
         self.dim = [(16, 16), (16, 16), (16, 24), (10, 10), (16, 10), (16, 16)]
-        #Begin timeline 
-        self.timeline()
+        #Create background canvas
+        self.bg = Fl_Box(0, 0, self.w(), self.h())
+        #create button
+        self.startbut = Fl_Button(200, 200, 108, 76, "PLAY")
+        self.startbut.hide()
+        #set callback
+        self.startbut.callback(self.timeline)
+        #Start screen 
+        self.startscreen()
         #FLTK level display functions 
         self.show()
         Fl.run()
 
         
-    def timeline(self) -> None:
+    def timeline(self, w=None) -> None:
         """Advances level."""
         #Avoid deleting level which doesn't exist
         if self.level:
@@ -164,6 +171,13 @@ graphics, running the game, and the event loop."""
         self.resize(self.x(), self.y(), s[1]*32, s[0]*32)
         self.state += 1
             
+    def startscreen(self) -> None:
+        """Manager for the starting screen."""
+        #Set background        
+        self.bg.image(Fl_JPEG_Image(os.path.join(ASSETS, "background1.jpg")).copy(self.bg.w(), self.bg.h()))
+        #show start button
+        self.startbut.show()
+        self.startbut.redraw()
 
 #Start program
 m = Framework()
