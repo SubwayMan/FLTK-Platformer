@@ -10,7 +10,7 @@ class player(Fl_Box):
 game. Conventional size is 16x32."""
 
     def __init__(self, x, y, w, h):
-       """Standard initializer giving values for xpos, ypos, while setting 
+        """Standard initializer giving values for xpos, ypos, while setting 
         gravity, xvelocity and yvelocity (g, xv, yv) to 0."""
         Fl_Box.__init__(self, x, y, w, h)
         self.sprite = Fl_PNG_Image(os.path.join(ASSETS, "tomatoboy.png"))
