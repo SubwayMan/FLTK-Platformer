@@ -68,7 +68,7 @@ pushing back the player, and allowing player to jump/walljump."""
  
     def __init__(self, x, y, w, h) -> None:
         """Constructor. Sprite is already supplied, takes basic dimension arguments."""
-        Game_Object.__init__(self, x, y, w, h, "platformblock.jpg")     
+        Game_Object.__init__(self, x, y, w, h, "platformblock.png")     
  
         
     def collis(self, pl) -> bool:
