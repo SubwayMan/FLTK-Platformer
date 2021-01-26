@@ -136,9 +136,7 @@ graphics, running the game, and the event loop."""
         self.state = 0
         self.level = None
         #Load levels from text file 
-        self.levels = open("levels.txt", "r").read().replace("\n", "").split("EL")
-        #Store level dimensions 
-        self.dim = [(16, 16), (16, 16), (16, 24), (10, 10), (16, 10), (16, 16)]
+        self.levels = open("levels.txt", "r").read().split("\n\n")
         #Create background canvas
         self.bg = Fl_Box(0, 0, self.w(), self.h())
         #create button
@@ -161,18 +159,25 @@ graphics, running the game, and the event loop."""
             Fl.remove_timeout(self.level.event_loop)
             #Delete currently loaded level 
             Fl.delete_widget(self.level)
-        #Get level dimensions 
-        s = self.dim[self.state]
+        #disable button
+        self.startbut.hide()
+        self.startbut.deactivate()
         #Begin drawing 
         self.begin()
+        #get level and dimensions
+        nlevel = self.levels[self.state].split("\n")
+        r = len(nlevel)
+        c = len(nlevel[0])
         #Create level
-        self.level = Level(s[0]+2, s[1]+2, self.levels[self.state], "background1.jpg", self.timeline)
+        self.level = Level(r, c, "".join(nlevel) , "background1.jpg", self.timeline)
         #Resize level 
-        self.resize(self.x(), self.y(), s[1]*32, s[0]*32)
+        self.resize(self.x(), self.y(), (c-2)*32, (r-2)*32)
         self.state += 1
             
     def startscreen(self) -> None:
         """Manager for the starting screen."""
+        #reset level
+        self.state=0
         #Set background        
         self.bg.image(Fl_JPEG_Image(os.path.join(ASSETS, "background1.jpg")).copy(self.bg.w(), self.bg.h()))
         #show start button

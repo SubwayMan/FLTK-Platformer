@@ -16,7 +16,7 @@ X.........X...X..X
 X.@....X^^X...X..X
 XXXXXXXXXXXXXXXXXX
 XXXXXXXXXXXXXXXXXX
-EL
+
 XXXXXXXXXXXXXXXXXX
 X................X
 X................X
@@ -36,7 +36,6 @@ X...XX.XX.XX.XX.XX
 X@..XX.XX.XX.XX.XX
 XXXXXXXXXXXXXXXXXX
 
-EL
 XXXXXXXXXXXXXXXXXXXXXXXXXX
 X..................k.....X
 X.................XX.....X
@@ -55,7 +54,7 @@ X...X.^.............X^X..X
 X...X.......XXX.....X^X..X
 X.@.X^^.k.^XXXXXXX..X^X.*X
 XXXXXXXXXXXXXXXXXXXXXXXXXX
-EL
+
 X..........X
 X..........X
 X.^.......*X
@@ -68,7 +67,7 @@ XXXX.......X
 X..X^^^^^^^X
 X..X^^^^^^^X
 XXXXXXXXXXXX
-EL
+
 XXXXXXXXXXXX
 X......X...X
 X......X*..X
@@ -87,7 +86,7 @@ X^..X..X...X
 X...X......X
 X@..X......X
 XXXXXXXXXXXX
-EL
+
 XXXXXXXXXXXXXXXXXX
 X................X
 X................X
@@ -106,3 +105,4 @@ X................X
 X................X
 X@...............X
 XXXXXXXXXXXXXXXXXX
+
