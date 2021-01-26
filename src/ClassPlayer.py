@@ -1,12 +1,17 @@
 from fltk import *
 from globs import *
 import math
+#----------------------------------------HEADER-----------------------------------------
+#This is the class that controls behaviour of the main player instance.
+#This file contains the movement physics and a large portion of the input handling.
+
 class player(Fl_Box):
-    '''Initializes the player character and controls movement and graphics for it. Player is 16x * 32y.'''
+    """Class player -> constructor: x, y, w, h: the controllable character inside the 
+game. Conventional size is 16x32."""
 
     def __init__(self, x, y, w, h):
-        '''Standard initializer giving values for xpos, ypos, while setting 
-        gravity, xvelocity and yvelocity (g, xv, yv) to 0.'''
+       """Standard initializer giving values for xpos, ypos, while setting 
+        gravity, xvelocity and yvelocity (g, xv, yv) to 0."""
         Fl_Box.__init__(self, x, y, w, h)
         self.sprite = Fl_PNG_Image(os.path.join(ASSETS, "tomatoboy.png"))
         self.image(self.sprite.copy(w, h))
