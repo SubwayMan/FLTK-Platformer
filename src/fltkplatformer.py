@@ -198,8 +198,11 @@ graphics, running the game, and the event loop."""
         #Create background canvas
         self.bg = Fl_Box(0, 0, self.w(), self.h())
         #create button
-        self.startbut = GUIbutton(190, 200, 128, 76, "PLAY")
+        self.startbut = GUIbutton(190, 270, 128, 76, "PLAY")
         self.startbut.hide()
+        #create box for displaying title
+        self.titlebox = Fl_Box(0, 0, 512, 256)
+        self.titlebox.hide()
         #set callback
         self.startbut.callback(self.timeline)
         #Start screen 
@@ -220,6 +223,8 @@ graphics, running the game, and the event loop."""
         #disable button
         self.startbut.hide()
         self.startbut.deactivate()
+        #hide title
+        self.titlebox.hide()
         #Begin drawing 
         self.begin()
         #get level and dimensions
@@ -240,6 +245,10 @@ graphics, running the game, and the event loop."""
         self.bg.image(Fl_JPEG_Image(os.path.join(ASSETS, "background1.jpg")).copy(self.bg.w(), self.bg.h()))
         #show start button
         self.startbut.show()
+        #show title
+        self.titlebox.show()
+        self.titlebox.image(Fl_PNG_Image(os.path.join(ASSETS, "title.png")))
+
         self.startbut.redraw()
 
 #Start program
