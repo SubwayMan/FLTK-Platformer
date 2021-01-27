@@ -156,3 +156,5 @@ class chest_key(Game_Object):
             pl.keys += 1
             return True
         return False
+
+

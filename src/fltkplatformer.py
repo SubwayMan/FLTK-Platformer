@@ -10,6 +10,40 @@ from GameWidget import *
 #main menu screen to the actual level.
 #The level class is responsible for structuring its contents
 #and calculating/evaluating the game loop.
+
+class GUIbutton(Fl_Button):
+    
+    """Special button class with custom looks for GUI and navigation purposes.
+Constructor: GUIbutton(x, y, w, h, label)"""
+    
+    def __init__(self, x, y, w, h, label=None) -> None:
+        
+        """Constructor."""
+        #Call fltk button instance
+        Fl_Button.__init__(self, x, y, w, h, label)
+        self.upimg = Fl_PNG_Image(os.path.join(ASSETS, "upbutspr.png"))
+        self.downimg = Fl_PNG_Image(os.path.join(ASSETS, "downbutspr.png"))
+        self.image(self.upimg.copy(w, h))
+        
+    def handle(self, e) -> int:
+        """Overriding handle method to manage its appearance
+upon press/release."""
+        #use FLTK's button handling
+        a = super().handle(e)
+        #Button "pops up" if mouse not over or mouse released
+        if not a or e == FL_RELEASE:
+            #set up image
+            self.image(self.upimg.copy(self.w(), self.h()))
+            #redraw button 
+            self.redraw()
+            return a
+        #Push button otherwise
+        self.image(self.downimg.copy(self.w(), self.h()))
+        self.redraw()
+        return a
+
+
+
 class Level(Fl_Group):
 
     """Level class. Constructor self(r, c, s, bg, endfunc):
@@ -140,7 +174,7 @@ graphics, running the game, and the event loop."""
         #Create background canvas
         self.bg = Fl_Box(0, 0, self.w(), self.h())
         #create button
-        self.startbut = Fl_Button(200, 200, 108, 76, "PLAY")
+        self.startbut = GUIbutton(200, 200, 108, 76, "PLAY")
         self.startbut.hide()
         #set callback
         self.startbut.callback(self.timeline)
