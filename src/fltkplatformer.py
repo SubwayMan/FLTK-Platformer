@@ -191,7 +191,7 @@ graphics, running the game, and the event loop."""
 
         Fl_Double_Window.__init__(self, 512, 512, title)
         #Level state, level variables 
-        self.state = 0
+        self.state =5 
         self.level = None
         #Load levels from text file 
         self.levels = open("levels.txt", "r").read().split("\n\n")
@@ -240,7 +240,7 @@ graphics, running the game, and the event loop."""
     def startscreen(self) -> None:
         """Manager for the starting screen."""
         #reset level
-        self.state=0
+        self.state=5
         #Set background        
         self.bg.image(Fl_JPEG_Image(os.path.join(ASSETS, "background1.jpg")).copy(self.bg.w(), self.bg.h()))
         #show start button
