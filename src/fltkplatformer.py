@@ -20,26 +20,50 @@ Constructor: GUIbutton(x, y, w, h, label)"""
         
         """Constructor."""
         #Call fltk button instance
-        Fl_Button.__init__(self, x, y, w, h, label)
+        Fl_Button.__init__(self, x, y, w, h)
+        #load images
         self.upimg = Fl_PNG_Image(os.path.join(ASSETS, "upbutspr.png"))
         self.downimg = Fl_PNG_Image(os.path.join(ASSETS, "downbutspr.png"))
+        #set image to unpressed by default
         self.image(self.upimg.copy(w, h))
+        #drawing
+        #removing default box
+        self.box(FL_NO_BOX)
+        #creating sub box for label
+        self.lbox = Fl_Box(x, y-5, w, h)
+        #label, font, fontsize
+        self.lbox.label(label)
+        self.lbox.labelsize(30)
+        self.lbox.labelfont(FL_COURIER_BOLD)
+        #flag for redrawing utility
+        self.pflag = False
+        #clear ugly dotted border
+        self.clear_visible_focus()
         
     def handle(self, e) -> int:
         """Overriding handle method to manage its appearance
 upon press/release."""
         #use FLTK's button handling
         a = super().handle(e)
-        #Button "pops up" if mouse not over or mouse released
-        if not a or e == FL_RELEASE:
-            #set up image
-            self.image(self.upimg.copy(self.w(), self.h()))
-            #redraw button 
-            self.redraw()
+        #Button pressed
+        if a and (e == FL_PUSH or e == FL_DRAG):
+            #Set image and position label if not done yet           
+            if not self.pflag:
+                self.pflag = True
+                self.image(self.downimg.copy(self.w(), self.h()))
+                self.lbox.position(self.x(), self.lbox.y()+5)
+            #redraw and return
+            self.parent().redraw()
             return a
-        #Push button otherwise
-        self.image(self.downimg.copy(self.w(), self.h()))
-        self.redraw()
+        #Button released
+        if a and e == FL_RELEASE:
+            #Set image and position label if not done yet
+            if self.pflag:
+                self.pflag = False
+                self.lbox.position(self.x(), self.lbox.y()-5)
+                self.image(self.upimg.copy(self.w(), self.h()))
+        #redraw and return       
+        self.parent().redraw()
         return a
 
 
@@ -174,7 +198,7 @@ graphics, running the game, and the event loop."""
         #Create background canvas
         self.bg = Fl_Box(0, 0, self.w(), self.h())
         #create button
-        self.startbut = GUIbutton(200, 200, 108, 76, "PLAY")
+        self.startbut = GUIbutton(190, 200, 128, 76, "PLAY")
         self.startbut.hide()
         #set callback
         self.startbut.callback(self.timeline)
