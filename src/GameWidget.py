@@ -96,7 +96,7 @@ Alters inputted player's requested input depending on collision."""
         if isCol:
             if pl.x()>=sx2:
 
-                pl.Px = max(pl.Px, sx2+1)
+                pl.Px = max(pl.Px, sx2)
                 pl.states["W"]=True
                 pl.xv = 0
                 return True
