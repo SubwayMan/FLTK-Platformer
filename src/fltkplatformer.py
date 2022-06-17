@@ -1,6 +1,6 @@
 #imports    
 from fltk import *
-from globs import *
+from globals import *
 from GameWidget import *
 
 #--------------------------HEADER--------------------------
