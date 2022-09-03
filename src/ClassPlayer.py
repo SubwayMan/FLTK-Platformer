@@ -1,5 +1,5 @@
 from fltk import *
-from globs import *
+from globals import *
 import math
 #----------------------------------------HEADER-----------------------------------------
 #This is the class that controls behaviour of the main player instance.

@@ -1,6 +1,6 @@
 from fltk import *
 from ClassPlayer import *
-from globs import *
+from globals import *
 import os	
 #---------------------------HEADER-----------------------------
 #This file contains the classes for the game objects.
