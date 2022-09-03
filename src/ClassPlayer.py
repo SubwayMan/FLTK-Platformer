@@ -105,7 +105,7 @@ game. Conventional size is 16x32."""
         r = 0
         super().handle(event)
         if event == FL_KEYUP:
-            if Fl.event_key() == ord("c"):
+            if Fl.event_key() in (ord("c"), FL_Up):
                 self.jump = True
                 r = 1
 
