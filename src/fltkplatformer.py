@@ -106,8 +106,6 @@ r*c = len(s)"""
         # store key coordinates
         self.key_coords = []
         #Go through provided textmap
-        print(s)
-        print(r, c, len(s))
         for row in range(r):
             for col in range(c):
                 #Get character   
@@ -246,14 +244,12 @@ graphics, running the game, and the event loop."""
         #Begin drawing 
         self.begin()
         # Dub screen
-        print(self.state, len(self.levels))
         if self.state >= len(self.levels):
             self.resize(self.x(), self.y(), 512, 512)
             self.winscreen()
             return
         #get level and dimensions
         nlevel = self.levels[self.state].strip().split("\n")
-        print(nlevel)
         r = len(nlevel)
         c = len(nlevel[0])
         #Create level
