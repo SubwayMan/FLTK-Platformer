@@ -103,6 +103,8 @@ r*c = len(s)"""
         self.bg.image(Fl_JPEG_Image(os.path.join(ASSETS, bg)).copy(self.bg.w(), self.bg.h()))
         #For calculating number of required keys for player 
         keys = 0
+        # store key coordinates
+        self.key_coords = []
         #Go through provided textmap
         for row in range(r):
             for col in range(c):
@@ -110,10 +112,11 @@ r*c = len(s)"""
                 id = s[(row*c)+col]
                 #Special case for player class                
                 if id == "@":
-                    self.chara = player((col*32)-32, (row*32)-32, 16, 32)
+                    self.chara = player((col*32)-32, (row*32)-32, 16, 32, self)
                 #Special case for level key
                 if id == "k":
                     keys += 1
+                    self.key_coords.append((col*32 - 32, row*32 - 32))
                 #Ignore character if unknown 
                 if id not in self.idtomod:
                     continue
@@ -153,11 +156,23 @@ on player. Returns collision result. Params: (player, obj)"""
         self.objects.sort(key=lambda a: self.chara.cdist(a.Center()))
         #Start a counter - we only check the 12 closest objects to same time
         counter = 0
-        #Run through objects 9not including player)
+        #Run through objects not including player)
         for ind, obj in enumerate(self.objects):
             
             #Collide player and object
             a = self.collision(self.chara, obj)
+
+            if a and isinstance(obj, Sawblade):
+                for i in range(len(self.objects)-1, -1, -1):
+                    if isinstance(self.objects[i], chest_key):
+                        Fl.delete_widget(self.objects[i])
+                        self.objects.pop(i)
+
+                for key_x, key_y in self.key_coords:
+                    self.objects.append(chest_key(key_x, key_y, 32, 32))
+
+                break
+                
             #Check if player has reached exit
             if isinstance(obj, exitportal) and a:
                 #Check if player has needed amount of keys 
@@ -176,6 +191,7 @@ on player. Returns collision result. Params: (player, obj)"""
             #Optimization  
             if counter >= 12:
                 break
+
         #Update and redraw player 
         self.chara.refresh()
         #Schedule next frame, attempting a bit over 60 fps 
@@ -191,7 +207,7 @@ graphics, running the game, and the event loop."""
 
         Fl_Double_Window.__init__(self, 512, 512, title)
         #Level state, level variables 
-        self.state = 0 
+        self.state = 0
         self.level = None
         #Load levels from text file 
         self.levels = open("levels.txt", "r").read().split("\n\n")

@@ -118,9 +118,11 @@ class Sawblade(Game_Object):
 
 
 
-    def collis(self, pl):
-        if super().collis(pl):
+    def collis(self, pl) -> bool:
+        ret = super().collis(pl)
+        if ret:
             pl.reset()
+        return ret
 
 
 class exitportal(Game_Object):
